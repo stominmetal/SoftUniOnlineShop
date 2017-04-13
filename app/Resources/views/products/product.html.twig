@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'product' %}
+
+{% block main %}
+    <div class="buttons">
+        <div class="col-md-12 text-center">
+            <h2 class="page-header">{{ product.name }}</h2>
+        </div>
+        <div class="col-md-4 text-center text-big">
+            <strong>Price:</strong> {{ product.price }}
+        </div>
+        <div class="col-md-4 text-center text-big">
+            <strong>Quantity:</strong> {{ product.quantity }}
+        </div>
+        <div class="col-md-4 text-center">
+            <a name="cart" class="btn btn-primary">Add to cart</a>
+        </div>
+    </div>
+
+    <div class="data">
+        <div class="pull-left">
+            {% if product.imageName is null %}
+                <img src= "/images/default.png" style="float: left">
+            {% else %}
+                <img src="/images/{{ product.imageName }}">
+            {% endif %}
+        </div>
+        <div class="description">{{ product.description }}</div>
+    </div>
+{% endblock %}
