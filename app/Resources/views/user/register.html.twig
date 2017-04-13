@@ -7,7 +7,7 @@
         <div class="well">
             <form class="form-horizontal" action="{{ path('user_register') }}" method="post">
                 <fieldset>
-                    <legend>Login</legend>
+                    <legend>Register</legend>
                     <div class="form-group">
                         <label class="col-sm-4 control-label" for="user_email">Email</label>
                         <div class="col-sm-4 ">
@@ -39,7 +39,7 @@
                         </div>
                     </div>
 
-                    {#{{  form_row(form._token) }}#}
+                    {{  form_row(form._token) }}
                 </fieldset>
             </form>
         </div>

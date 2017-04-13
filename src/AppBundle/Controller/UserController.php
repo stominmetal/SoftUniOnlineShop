@@ -2,13 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use SoftUniBlogBundle\Entity\User;
-use SoftUniBlogBundle\Entity\Role;
-use SoftUniBlogBundle\Form\UserType;
-use SoftUniBlogBundle\Repository\UserRepository;
+use AppBundle\Entity\Role;
+use AppBundle\Form\UserType;
+use AppBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,8 +24,32 @@ class UserController extends Controller
      */
     public function registerAction(Request $request)
     {
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $password = $this->get('security.password_encoder')
+                ->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+
+            $roleRepo = $this->getDoctrine()->getRepository(Role::class);
+            $role = $roleRepo->findOneBy(['name' => self::ROLE_DEFAULT]);
+
+            $user->addRole($role);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('security_login');
+        }
+
         return $this->render(
-            'user/register.html.twig'
+            'user/register.html.twig',
+            array('form' => $form->createView())
         );
     }
 
