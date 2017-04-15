@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'categories' %}
+
+{% block main %}
+    <div class="text-center">
+        <h2>Categories</h2>
+        {% for category in categories %}
+            <div onclick="doSomething({{ category.id }})" id="category" class="col-md-3 text-center border">
+                <h2 class="page-header">{{ category.name }}</h2>
+                <p>Products: {{ category.quantity }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function doSomething(pid) {
+            location.href = '/categories/' + pid;
+        }
+    </script>
+{% endblock %}

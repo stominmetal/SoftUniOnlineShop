@@ -8,10 +8,10 @@
 
 namespace AppBundle\Controller;
 
-use SoftUniBlogBundle\Entity\Products;
-use SoftUniBlogBundle\Entity\Categories;
-use SoftUniBlogBundle\Entity\User;
-use SoftUniBlogBundle\Form\UserType;
+use AppBundle\Entity\Products;
+use AppBundle\Entity\Categories;
+use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,6 +20,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductsController extends Controller
 {
+    /**
+     * @Route("/", name="blog_index")
+     */
+    public function listCategories()
+    {
+        $categories = $this->getDoctrine()
+            ->getRepository("AppBundle:Categories")
+            ->findAll();
+
+        /**
+         * @var $category \AppBundle\Entity\Categories
+         */
+        foreach ($categories as $category) {
+            $products = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findBy(['catId' => $category->getId()]);
+
+            $category->setProductsNumber(count($products));
+        }
+
+        return $this->render("products/categories.html.twig", [
+            'categories' => $categories
+        ]);
+    }
+
     /**
      * @Route("/product/{id}", name="product_info")
      */
