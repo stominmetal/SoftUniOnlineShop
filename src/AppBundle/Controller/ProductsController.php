@@ -46,6 +46,21 @@ class ProductsController extends Controller
     }
 
     /**
+     * @Route("/categories/{catId}", name="products_list")
+     */
+    public function listProducts(int $catId)
+    {
+        $products = $this->getDoctrine()
+            ->getRepository("AppBundle:Products")
+            ->findBy(['catId' => $catId]);
+
+        return $this->render("products/index.html.twig", [
+            'products' => $products,
+            'catId' => $catId
+        ]);
+    }
+
+    /**
      * @Route("/product/{id}", name="product_info")
      */
     public function product(int $id)
