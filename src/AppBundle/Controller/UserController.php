@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BoughtProducts;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -61,8 +62,28 @@ class UserController extends Controller
      */
     public function profileAction()
     {
-        $user = $this->getUser();
-        return $this->render("user/profile.html.twig", ['user'=>$user]);
-    }
+        $userId = $this->getUser()->getId();
 
+        $boughtProducts = $this->getDoctrine()
+            ->getRepository("AppBundle:BoughtProducts")
+            ->findBy(['uid' => $userId]);
+
+        $products = [];
+
+        /**
+         * @var $product BoughtProducts
+         */
+        foreach ($boughtProducts as $product) {
+            $productId = $product->getPid();
+            $quantity = $product->getQuantity();
+
+            $productProperties = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findOneBy(['id' => $productId]);
+
+            $products[] = ['name' => $productProperties->getName(), 'imageName' => $productProperties->getImageName(), 'price' => $productProperties->getPrice(), 'quantity' => $quantity];
+        }
+
+        return $this->render("user/profile.html.twig", ['boughtProducts' => $products]);
+    }
 }

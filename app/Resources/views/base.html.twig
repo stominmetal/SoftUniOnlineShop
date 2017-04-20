@@ -10,10 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>{% block title %}Texhika Shop{% endblock %}</title>
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker.min.css') }}">
         <link rel="stylesheet"
               href="{{ asset("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css") }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker.min.css') }}">
+        <link rel="stylesheet" href="{{ asset("css/index.css") }}">
         <link rel="stylesheet" href="{{ asset("css/site.css") }}">
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
@@ -24,7 +25,7 @@
 {% block header %}
     <header>
         <div class="navbar navbar-static-top" role="navigation">
-            <div class="container-fluid header">
+            <div class="container-fluid">
                 <div class="navbar-header">
                     <a href="{{ path('blog_index') }}" class="navbar-brand">TEXHIKA SHOP</a>
 
@@ -37,6 +38,8 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                            {% endif %}
                             <li>
                                 <a href="{{ path('cart_list') }}">
                                     <span class="glyphicon glyphicon-shopping-cart"></span>

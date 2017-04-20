@@ -2,6 +2,7 @@
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    font-size: 18px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -158,4 +159,13 @@ footer {
 .cart-product {
     padding: 10px;
     margin-bottom: 15px;
+}
+
+.glyphicon-remove {
+    color: red;
+}
+
+#btn-buy {
+    margin-bottom: 15px;
+    align-self: flex-end;
 }

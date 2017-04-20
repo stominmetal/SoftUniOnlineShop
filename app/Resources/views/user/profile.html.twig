@@ -3,9 +3,24 @@
 {% block body_id 'profile' %}
 
 {% block main %}
-    <div>
-        {{ user.email }}
-        <br>
-        {{ user.fullName }}
-    </div>
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th class="text-center">Снимка</th>
+            <th class="text-center">Име</th>
+            <th class="text-center">Цена</th>
+            <th class="text-center">Количество</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in boughtProducts %}
+            <tr>
+                <td><img class="small-picture" src="/images/{{ product.imageName }}"></td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} лв.</td>
+                <td>{{ product.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
