@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'cart' %}
+
+{% block main %}
+    {#{{ dump(products) }}#}
+    <div id="cart-products">
+        {% if products is iterable %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th class="text-center">Снимка</th>
+                    <th class="text-center">Име</th>
+                    <th class="text-center">Цена</th>
+                    <th class="text-center">Количество</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for id, product in products %}
+                    {#{{ dump(product) }}#}
+                    <tr>
+                        <td><img class="small-picture" src="/images/{{ product.imageName }}"></td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.price }} лв.</td>
+                        <td>{{ product.quantity }}</td>
+                        <td><a href="{{ path('remove_element_from_cart', {'id':id}) }}"><span
+                                        class="glyphicon glyphicon-remove"></span></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div>
+                <a id="btn-buy" class="btn btn-primary" href="#">Buy all</a>
+            </div>
+        {% else %}
+            {{ products }}
+        {% endif %}
+    </div>
+{% endblock %}

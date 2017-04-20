@@ -38,8 +38,13 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
                             <li>
-                                <a>
+                                <a href="{{ path('cart_list') }}">
                                     <span class="glyphicon glyphicon-shopping-cart"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('user_profile') }}">
+                                    My Profile
                                 </a>
                             </li>
                             <li>
