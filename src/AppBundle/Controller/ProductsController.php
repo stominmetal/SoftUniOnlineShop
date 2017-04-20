@@ -73,4 +73,13 @@ class ProductsController extends Controller
             'product' => $product
         ]);
     }
+
+    /**
+     * @Route("/editor/add-product", name="add_product")
+     */
+    public function addProduct(){
+        return $this->render(
+            'products/add_product.html.twig'
+        );
+    }
 }

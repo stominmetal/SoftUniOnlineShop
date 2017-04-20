@@ -45,6 +45,25 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="money", type="float")
+     */
+    private $money = 10000;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role", type="string", length=255)
+     */
+    private $role = 'ROLE_USER';
+
+    /**
+     * @var ArrayCollection
+     */
+    private $articles;
+
+    /**
      * @var ArrayCollection
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Role")
      * @ORM\JoinTable(name="users_roles",
@@ -147,7 +166,7 @@ class User implements UserInterface
      * <code>
      * public function getRoles()
      * {
-     *     return array('ROLE_USER');
+     *     return array('ROLE_USER', 'ROLE_EDITOR', 'ROLE_ADMIN');
      * }
      * </code>
      *
@@ -213,10 +232,41 @@ class User implements UserInterface
     {
         // TODO: Implement eraseCredentials() method.
     }
-	
-	function __toString()
+
+    function __toString()
     {
         return $this->fullName;
     }
-}
 
+    /**
+     * @return float
+     */
+    public function getMoney(): float
+    {
+        return $this->money;
+    }
+
+    /**
+     * @param float $money
+     */
+    public function setMoney(float $money)
+    {
+        $this->money = $money;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param string $role
+     */
+    public function setRole(string $role)
+    {
+        $this->role = $role;
+    }
+}

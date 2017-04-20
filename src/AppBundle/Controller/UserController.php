@@ -40,6 +40,7 @@ class UserController extends Controller
             $role = $roleRepo->findOneBy(['name' => self::ROLE_DEFAULT]);
 
             $user->addRole($role);
+            $user->setMoney(10000);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);

@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\BoughtProducts;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -100,5 +101,41 @@ class CartController extends Controller
         $session->set($this->getUser()->getId(), $products);
 
         return $this->redirectToRoute('cart_list');
+    }
+
+    /**
+     * @Route("cart/buy_all", name="buy_all_products")
+     */
+    public function buyAllProducts(Request $request)
+    {
+        $session = $request->getSession();
+
+        $userId = $this->getUser()->getId();
+
+        $products = $session->get($userId);
+
+        $boughtProducts = $this->getDoctrine()
+            ->getRepository("AppBundle:BoughtProducts")
+            ->findBy(['uid' => $userId]);
+
+        $em = $this->getDoctrine()->getConnection();
+
+        $query = "INSERT INTO bought";
+
+        foreach ($products as $productId => $quantity) {
+            $product = new BoughtProducts();
+
+            $product->setUid($userId);
+            $product->setPid($productId);
+            $em->persist($product);
+
+//            $em->bindValue('foobar', $foobar);
+        }
+
+        $em->execute();
+
+        $session->remove($userId);
+
+        return $this->redirectToRoute('user_profile');
     }
 }

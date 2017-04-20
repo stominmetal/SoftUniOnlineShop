@@ -2,12 +2,23 @@ security:
     encoders:
         # Our user class and the algorithm we'll use to encode passwords
         # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
+        Symfony\Component\Security\Core\User\User: plaintext
         AppBundle\Entity\User: bcrypt
+#        Symfony\Component\Security\Core\User\User: bcrypt
 
     providers:
         # in this example, users are stored via Doctrine in the database
         # To see the users at src/AppBundle/DataFixtures/ORM/LoadFixtures.php
         # To load users from somewhere else: http://symfony.com/doc/current/cookbook/security/custom_provider.html
+        chain_provider:
+            chain:
+                providers: [in_memory, database_users]
+        in_memory:
+            memory:
+                users:
+                    admin@admin.admin: {password: admin, roles: ROLE_ADMIN}
+                    editor@editor.editor: {password: editor, roles: ROLE_EDITOR}
+
         database_users:
             entity: { class: AppBundle:User, property: email }
 
@@ -41,6 +52,7 @@ security:
 
 
     access_control:
+        - {path: /editor/add-product, roles: ROLE_EDITOR}
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }
