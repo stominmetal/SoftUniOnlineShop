@@ -105,10 +105,6 @@ footer {
     margin-bottom: 5px;
 }
 
-.buttons {
-    margin-bottom: 155px;
-}
-
 .data {
     margin-bottom: 50px;
 }
@@ -168,4 +164,10 @@ footer {
 #btn-buy {
     margin-bottom: 15px;
     align-self: flex-end;
+}
+
+.product-info {
+    margin-bottom: 10px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e5e5e5;
 }

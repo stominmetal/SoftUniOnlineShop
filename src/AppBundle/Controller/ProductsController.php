@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Products;
 use AppBundle\Entity\Categories;
 use AppBundle\Entity\User;
+use AppBundle\Form\ProductType;
 use AppBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -77,9 +78,21 @@ class ProductsController extends Controller
     /**
      * @Route("/editor/add-product", name="add_product")
      */
-    public function addProduct(){
+    public function addProduct(Request $request){
+        $product = new Products();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->render('something.html.twig', [
+                'form' => $form
+            ]);
+        }
+
         return $this->render(
-            'products/add_product.html.twig'
+            'products/add_product.html.twig', [
+                'form' => $form->createView()
+            ]
         );
     }
 }
