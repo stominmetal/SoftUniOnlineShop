@@ -78,20 +78,72 @@ class ProductsController extends Controller
     /**
      * @Route("/editor/add-product", name="add_product")
      */
-    public function addProduct(Request $request){
+    public function addProduct(Request $request)
+    {
         $product = new Products();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
+        $flag = false;
+
         if ($form->isSubmitted() && $form->isValid()) {
+            $mimeType = $form['imageName']->getData()->getMimeType();
 
-//            $em = $this->getDoctrine()->getManager();
-//            $em->persist($product);
-//            $em->flush();
+            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                $flag = true;
+            } else {
+                return $this->render(
+                    'products/add_product.html.twig', [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
 
-            return $this->render('something.html.twig', [
-                'form' => $form
-            ]);
+            if ($form['quantity']->getData() > 0) {
+                $flag = true;
+            } else {
+                return $this->render(
+                    'products/add_product.html.twig', [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
+
+            if ($form['price']->getData() > 0) {
+                $flag = true;
+            } else {
+                return $this->render(
+                    'products/add_product.html.twig', [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
+
+            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                $flag = true;
+            } else {
+                return $this->render(
+                    'products/add_product.html.twig', [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
+
+            if ($flag) {
+                $em = $this->getDoctrine()->getManager();
+
+                $extension = explode("/", $mimeType)[1];
+                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+
+                $form['imageName']->getData()->move('images/products', $newImgName);
+
+                $product->setImageName($newImgName);
+
+                $em->persist($product);
+                $em->flush();
+            }
+
+            return $this->redirectToRoute('blog_index');
         }
 
         return $this->render(

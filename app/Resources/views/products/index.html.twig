@@ -10,10 +10,12 @@
         {% for product in products %}
             <div class="col-md-4 text-center border product">
                 <div class="text-big categories-product-title">{{ product.name }}</div>
-                <div><img class="categories-image" src="/images/{{ product.imageName }}"></div>
+                <div><img class="categories-image" src="/images/products/{{ product.imageName }}"></div>
                 <div>{{ product.description|slice(0, 200) }}...</div>
-                <p class="important-text"><strong>Price:</strong> {{ product.price }} лв.</p>
+                <hr>
+                <p class="important-text"><strong>Price:</strong> {{ product.price|number_format(2) }} лв.</p>
                 <p class="important-text"><strong>Quantity:</strong> {{ product.quantity }}</p>
+                <hr>
                 <div><a class="btn btn-primary" href="/product/{{ product.id }}">Научи повече</a></div>
             </div>
         {% endfor %}
