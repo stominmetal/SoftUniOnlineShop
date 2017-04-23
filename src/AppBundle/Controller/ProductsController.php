@@ -84,6 +84,11 @@ class ProductsController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($product);
+//            $em->flush();
+
             return $this->render('something.html.twig', [
                 'form' => $form
             ]);

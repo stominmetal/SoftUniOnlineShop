@@ -13,7 +13,6 @@
         <link rel="stylesheet"
               href="{{ asset("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css") }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker.min.css') }}">
         <link rel="stylesheet" href="{{ asset("css/index.css") }}">
         <link rel="stylesheet" href="{{ asset("css/site.css") }}">
     {% endblock %}
@@ -38,23 +37,39 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
-                            {% if is_granted('ROLE_ADMIN') %}
+                            {% if is_granted('ROLE_EDITOR') %}
+                                <li>
+                                    <a href="{{ path('add_product') }}">
+                                        Add Product
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('user_profile') }}">
+                                        My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('security_logout') }}">
+                                        Logout
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{{ path('cart_list') }}">
+                                        <span class="glyphicon glyphicon-shopping-cart"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('user_profile') }}">
+                                        My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('security_logout') }}">
+                                        Logout
+                                    </a>
+                                </li>
                             {% endif %}
-                            <li>
-                                <a href="{{ path('cart_list') }}">
-                                    <span class="glyphicon glyphicon-shopping-cart"></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ path('user_profile') }}">
-                                    My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ path('security_logout') }}">
-                                    Logout
-                                </a>
-                            </li>
                         {% else %}
                             <li>
                                 <a href="{{ path('user_register') }}">
