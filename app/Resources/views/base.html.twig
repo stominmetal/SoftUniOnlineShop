@@ -37,10 +37,15 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
-                            {% if is_granted('ROLE_EDITOR') %}
+                            {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
                                 <li>
-                                    <a href="{{ path('add_product') }}">
-                                        Add Product
+                                    <a href="{{ path('admin_products') }}">
+                                        Products
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('admin_categories') }}">
+                                        Categories
                                     </a>
                                 </li>
                                 <li>
@@ -53,6 +58,13 @@
                                         Logout
                                     </a>
                                 </li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li>
+                                        <a href="{{ path('admin_users') }}">
+                                            Users
+                                        </a>
+                                    </li>
+                                {% endif %}
                             {% else %}
                                 <li>
                                     <a href="{{ path('cart_list') }}">

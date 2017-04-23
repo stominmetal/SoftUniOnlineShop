@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Products;
 use AppBundle\Entity\Categories;
 use AppBundle\Entity\User;
+use AppBundle\Form\CategoryType;
 use AppBundle\Form\ProductType;
 use AppBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -76,7 +77,7 @@ class ProductsController extends Controller
     }
 
     /**
-     * @Route("/editor/add-product", name="add_product")
+     * @Route("/add-product", name="add_product")
      */
     public function addProduct(Request $request)
     {
@@ -143,7 +144,7 @@ class ProductsController extends Controller
                 $em->flush();
             }
 
-            return $this->redirectToRoute('blog_index');
+            return $this->redirectToRoute('admin_products');
         }
 
         return $this->render(
@@ -151,5 +152,88 @@ class ProductsController extends Controller
                 'form' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Route("/add-category", name="add_category")
+     */
+    public function addCategory(Request $request)
+    {
+        $category = new Categories();
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        $flag = false;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mimeType = $form['imageName']->getData()->getMimeType();
+
+            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                $em = $this->getDoctrine()->getManager();
+
+                $extension = explode("/", $mimeType)[1];
+                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+
+                $form['imageName']->getData()->move('images/categories', $newImgName);
+
+                $category->setImageName($newImgName);
+
+                $em->persist($category);
+                $em->flush();
+            } else {
+                return $this->render(
+                    'products/add_category.html.twig', [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
+
+            return $this->redirectToRoute('admin_categories');
+        }
+
+        return $this->render(
+            'products/add_category.html.twig', [
+                'form' => $form->createView()
+            ]
+        );
+    }
+
+    /**
+     * @Route("/categories", name="admin_categories")
+     */
+    public function adminCategories() {
+        $categories = $this->getDoctrine()
+            ->getRepository("AppBundle:Categories")
+            ->findAll();
+
+        return $this->render('products/admin_categories.html.twig', [
+            'categories' => $categories
+        ]);
+    }
+
+    /**
+     * @Route("/products", name="admin_products")
+     */
+    public function adminProducts() {
+        $products = $this->getDoctrine()
+            ->getRepository('AppBundle:Products')
+            ->findAll();
+
+        return $this->render('products/admin_products.html.twig', [
+            'products' => $products
+        ]);
+    }
+
+    /**
+     * @Route("/users", name="admin_users")
+     */
+    public function adminUsers() {
+        $users = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->findAll();
+
+        return $this->render('products/admin_products.html.twig', [
+            'users' => $users
+        ]);
     }
 }

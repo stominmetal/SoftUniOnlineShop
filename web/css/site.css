@@ -145,7 +145,7 @@ footer {
     padding: 0 25px;
 }
 
-#category-products > div > div > a {
+#category-products > div > div > div > a {
     margin-bottom: 15px;
 }
 
@@ -177,4 +177,18 @@ footer {
     margin-bottom: 10px;
     padding-bottom: 22px;
     border-bottom: 1px solid #e5e5e5;
+}
+
+.edit {
+    margin-right: 5px;
+}
+
+.trash {
+    color: red;
+}
+
+.add-group {
+    position: absolute;
+    right: 0;
+    margin-right: 40px;
 }

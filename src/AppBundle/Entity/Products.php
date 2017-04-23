@@ -63,6 +63,51 @@ class Products
      */
     private $imageName;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="discount", type="float")
+     */
+    private $discount = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="order_value", type="float")
+     */
+    private $orderValue = 0;
+
+    /**
+     * @return float
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderValue()
+    {
+        return $this->orderValue;
+    }
+
+    /**
+     * @param int $orderValue
+     */
+    public function setOrderValue(int $orderValue)
+    {
+        $this->orderValue = $orderValue;
+    }
+
+    /**
+     * @param float $discount
+     */
+    public function setDiscount(float $discount)
+    {
+        $this->discount = $discount;
+    }
 
     /**
      * Get id
