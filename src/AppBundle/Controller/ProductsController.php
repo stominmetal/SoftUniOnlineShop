@@ -250,6 +250,25 @@ class ProductsController extends Controller
         $editForm = $this->createForm(ProductType::class, $product);
         $editForm->handleRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $mimeType = $editForm['imageName']->getData()->getMimeType();
+
+            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                $extension = explode("/", $mimeType)[1];
+                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+
+                $editForm['imageName']->getData()->move('images/products', $newImgName);
+
+                $product->setImageName($newImgName);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('admin_products');
+        }
+
         return $this->render('products/edit_product.html.twig', array(
             'product'     => $product,
             'edit_form'   => $editForm->createView()
@@ -265,6 +284,25 @@ class ProductsController extends Controller
     {
         $editForm = $this->createForm(CategoryType::class, $category);
         $editForm->handleRequest($request);
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $mimeType = $editForm['imageName']->getData()->getMimeType();
+
+            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                $extension = explode("/", $mimeType)[1];
+                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+
+                $editForm['imageName']->getData()->move('images/categories', $newImgName);
+
+                $category->setImageName($newImgName);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('admin_categories');
+        }
 
         return $this->render('products/edit_category.html.twig', array(
             'category'     => $category,
