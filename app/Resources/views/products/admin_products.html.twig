@@ -28,7 +28,7 @@
                 <td>{{ product.price }} лв.</td>
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.discount }}</td>
-                <td><a href="#"><span class="glyphicon glyphicon-edit edit"></span></a><a href="#"><span
+                <td><a href="{{ path('edit_product', {'id' : product.id}) }}"><span class="glyphicon glyphicon-edit edit"></span></a><a href="#"><span
                                 class="glyphicon glyphicon-trash trash"></span></a></td>
             </tr>
         {% endfor %}

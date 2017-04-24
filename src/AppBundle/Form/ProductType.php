@@ -29,7 +29,7 @@ class ProductType extends AbstractType
                 ]])
             ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
+            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4'], 'data_class' => null]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

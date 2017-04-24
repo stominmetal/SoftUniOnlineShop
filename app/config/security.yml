@@ -53,7 +53,9 @@ security:
 
     access_control:
         - {path: /add-product, roles: [ROLE_EDITOR, ROLE_ADMIN]}
-        - {path: /add-category, roles: ROLE_EDITOR}
+        - {path: /add-category, roles: [ROLE_EDITOR, ROLE_ADMIN]}
+        - {path: /edit-category, roles: [ROLE_EDITOR, ROLE_ADMIN]}
+        - {path: /edit-product, roles: [ROLE_EDITOR, ROLE_ADMIN]}
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }

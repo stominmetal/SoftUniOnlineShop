@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+            {{ form_start(edit_form) }}
+            <fieldset>
+                <legend>Edit Product</legend>
+                {{ form_widget(edit_form) }}
+                <div class="form-group">
+                    <div>
+                        <a class="btn btn-danger" href="#">Reset</a>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </div>
+            </fieldset>
+            {{ form_end(edit_form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function () {
+            $('label').addClass('col-sm-4 control-label');
+            $('form').addClass('form-horizontal');
+            $('fieldset div').addClass('form-group');
+            $('fieldset div:last-child div').attr('class', 'col-sm-4 col-sm-offset-4');
+        });
+    </script>
+{% endblock %}

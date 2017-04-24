@@ -22,7 +22,7 @@
                 <td><img class="small-picture" src="/images/categories/{{ category.imageName }}"></td>
                 <td>{{ category.name }}</td>
                 <td>{{ category.discount }}</td>
-                <td><a href="#"><span class="glyphicon glyphicon-edit"></span></a><a href="#"><span
+                <td><a href="{{ path('edit_category', {'id' : category.id}) }}"><span class="glyphicon glyphicon-edit"></span></a><a href="#"><span
                                 class="glyphicon glyphicon-trash trash"></span></a></td>
             </tr>
         {% endfor %}

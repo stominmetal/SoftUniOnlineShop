@@ -40,28 +40,28 @@
                             {% if is_granted('ROLE_EDITOR') or is_granted('ROLE_ADMIN') %}
                                 <li>
                                     <a href="{{ path('admin_products') }}">
-                                        Products
+                                        Продукти
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path('admin_categories') }}">
-                                        Categories
+                                        Категории
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path('user_profile') }}">
-                                        My Profile
+                                        Моят профил
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path('security_logout') }}">
-                                        Logout
+                                        Изход
                                     </a>
                                 </li>
                                 {% if is_granted('ROLE_ADMIN') %}
                                     <li>
                                         <a href="{{ path('admin_users') }}">
-                                            Users
+                                            Потребители
                                         </a>
                                     </li>
                                 {% endif %}
@@ -73,24 +73,24 @@
                                 </li>
                                 <li>
                                     <a href="{{ path('user_profile') }}">
-                                        My Profile
+                                        Моят Профил
                                     </a>
                                 </li>
                                 <li>
                                     <a href="{{ path('security_logout') }}">
-                                        Logout
+                                        Изход
                                     </a>
                                 </li>
                             {% endif %}
                         {% else %}
                             <li>
                                 <a href="{{ path('user_register') }}">
-                                    Register
+                                    Регистрация
                                 </a>
                             </li>
                             <li>
                                 <a href="{{ path('security_login') }}">
-                                    Login
+                                    Вход
                                 </a>
                             </li>
                         {% endif %}

@@ -201,7 +201,8 @@ class ProductsController extends Controller
     /**
      * @Route("/categories", name="admin_categories")
      */
-    public function adminCategories() {
+    public function adminCategories()
+    {
         $categories = $this->getDoctrine()
             ->getRepository("AppBundle:Categories")
             ->findAll();
@@ -214,7 +215,8 @@ class ProductsController extends Controller
     /**
      * @Route("/products", name="admin_products")
      */
-    public function adminProducts() {
+    public function adminProducts()
+    {
         $products = $this->getDoctrine()
             ->getRepository('AppBundle:Products')
             ->findAll();
@@ -227,7 +229,8 @@ class ProductsController extends Controller
     /**
      * @Route("/users", name="admin_users")
      */
-    public function adminUsers() {
+    public function adminUsers()
+    {
         $users = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->findAll();
@@ -235,5 +238,37 @@ class ProductsController extends Controller
         return $this->render('products/admin_products.html.twig', [
             'users' => $users
         ]);
+    }
+
+    /**
+     * Displays a form to edit an existing project entity.
+     *
+     * @Route("/edit-product/{id}", name="edit_product")
+     */
+    public function editProduct(Request $request, Products $product)
+    {
+        $editForm = $this->createForm(ProductType::class, $product);
+        $editForm->handleRequest($request);
+
+        return $this->render('products/edit_product.html.twig', array(
+            'product'     => $product,
+            'edit_form'   => $editForm->createView()
+        ));
+    }
+
+    /**
+     * Displays a form to edit an existing project entity.
+     *
+     * @Route("/edit-category/{id}", name="edit_category")
+     */
+    public function editCategory(Request $request, Categories $category)
+    {
+        $editForm = $this->createForm(CategoryType::class, $category);
+        $editForm->handleRequest($request);
+
+        return $this->render('products/edit_category.html.twig', array(
+            'category'     => $category,
+            'edit_form'   => $editForm->createView()
+        ));
     }
 }
