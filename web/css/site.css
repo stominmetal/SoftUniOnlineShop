@@ -180,11 +180,20 @@ footer {
 }
 
 .edit {
-    margin-right: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.edit-cat {
+    margin-right: 10px;
 }
 
 .trash {
     color: red;
+}
+
+.view {
+    color: #43b946;
 }
 
 .add-group {

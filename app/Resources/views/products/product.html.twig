@@ -17,7 +17,14 @@
             <strong>Количество:</strong> {{ product.quantity }}
         </div>
         <div class="col-md-4 text-center">
-            <a name="cart" class="btn btn-primary" href="{{ path('add_to_cart', {'id': product.id}) }}">Добави в количката</a>
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EDITOR') %}
+                {% set disabled = ' disabled' %}
+            {% else %}
+                {% set disabled = '' %}
+            {% endif %}
+            <a name="cart" class="btn btn-primary{{ disabled }}" href="{{ path('add_to_cart', {'id': product.id}) }}">Добави
+                в
+                количката</a>
         </div>
     </div>
 

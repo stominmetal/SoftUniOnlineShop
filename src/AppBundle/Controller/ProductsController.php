@@ -270,8 +270,8 @@ class ProductsController extends Controller
         }
 
         return $this->render('products/edit_product.html.twig', array(
-            'product'     => $product,
-            'edit_form'   => $editForm->createView()
+            'product' => $product,
+            'edit_form' => $editForm->createView()
         ));
     }
 
@@ -305,8 +305,45 @@ class ProductsController extends Controller
         }
 
         return $this->render('products/edit_category.html.twig', array(
-            'category'     => $category,
-            'edit_form'   => $editForm->createView()
+            'category' => $category,
+            'edit_form' => $editForm->createView()
         ));
+    }
+
+    /**
+     * Deletes a project entity.
+     *
+     * @Route("/delete-product/{id}", name="product_delete")
+     */
+    public function deleteProduct(Products $product)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($product);
+        $em->flush();
+
+        return $this->redirectToRoute('admin_products');
+    }
+
+    /**
+     * Deletes a project entity.
+     *
+     * @Route("/delete-category/{id}", name="category_delete")
+     */
+    public function deleteCategory(Request $request, Categories $category)
+    {
+        $products = $this->getDoctrine()
+            ->getRepository('AppBundle:Products')
+            ->findBy(['catId' => $category->getId()]);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($category);
+
+        foreach ($products as $product) {
+            self::deleteProduct($product);
+        }
+
+        $em->flush();
+
+        return $this->redirectToRoute('admin_categories');
     }
 }
