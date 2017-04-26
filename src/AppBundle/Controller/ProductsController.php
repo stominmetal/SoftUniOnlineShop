@@ -256,6 +256,20 @@ class ProductsController extends Controller
             $mimeType = $editForm['imageName']->getData()->getMimeType();
 
             if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+                if ($editForm['quantity']->getData() < 0) {
+                    return $this->render('products/edit_product.html.twig', array(
+                        'product' => $product,
+                        'edit_form' => $editForm->createView()
+                    ));
+                }
+
+                if ($editForm['price']->getData() < 0) {
+                    return $this->render('products/edit_product.html.twig', array(
+                        'product' => $product,
+                        'edit_form' => $editForm->createView()
+                    ));
+                }
+
                 $extension = explode("/", $mimeType)[1];
                 $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
 

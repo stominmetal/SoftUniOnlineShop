@@ -65,6 +65,10 @@ class UserController extends Controller
     {
         $userId = $this->getUser()->getId();
 
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
         $boughtProducts = $this->getDoctrine()
             ->getRepository("AppBundle:BoughtProducts")
             ->findBy(['uid' => $userId]);
@@ -85,6 +89,9 @@ class UserController extends Controller
             $products[] = ['name' => $productProperties->getName(), 'imageName' => $productProperties->getImageName(), 'price' => $productProperties->getPrice(), 'quantity' => $quantity];
         }
 
-        return $this->render("user/profile.html.twig", ['boughtProducts' => $products]);
+        return $this->render("user/profile.html.twig", [
+            'boughtProducts' => $products,
+            'user' => $user
+        ]);
     }
 }

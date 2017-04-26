@@ -3,6 +3,10 @@
 {% block body_id 'profile' %}
 
 {% block main %}
+    <div class="well">
+        <h2>{{ user.fullName }}</h2>
+        <span>Пари в портфейла: {{ user.money|number_format(2) }} лв.</span>
+    </div>
     <table class="table text-center">
         <thead>
         <tr>

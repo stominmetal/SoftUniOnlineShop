@@ -110,8 +110,12 @@ footer {
 }
 
 .product {
-    align-items: stretch;
-    margin: 20px;
+    /*align-items: stretch;*/
+    /*margin: 20px;*/
+    display: inline-block;
+    /*width: 30%;*/
+    /*margin: 20px;*/
+    height: 770px;
 }
 
 .categories-image {
@@ -200,4 +204,13 @@ footer {
     position: absolute;
     right: 0;
     margin-right: 40px;
+}
+
+.products-view {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.learn-more {
+    margin-bottom: 22px;
 }

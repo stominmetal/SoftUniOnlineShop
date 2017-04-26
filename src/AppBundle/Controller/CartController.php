@@ -100,6 +100,8 @@ class CartController extends Controller
 
         $session->set($this->getUser()->getId(), $products);
 
+        $this->get('session')->getFlashBag()->add('success', 'Product is removed successfully!');
+
         return $this->redirectToRoute('cart_list');
     }
 
@@ -114,28 +116,38 @@ class CartController extends Controller
 
         $products = $session->get($userId);
 
-        $boughtProducts = $this->getDoctrine()
-            ->getRepository("AppBundle:BoughtProducts")
-            ->findBy(['uid' => $userId]);
-
         $em = $this->getDoctrine()->getConnection();
 
-        $query = "INSERT INTO bought";
-
+        $query = "UPDATE bought_products SET quantity = :quantity WHERE uid = :uid AND pid = :pid";
+//
         foreach ($products as $productId => $quantity) {
-            $product = new BoughtProducts();
+            $boughtProducts = $this->getDoctrine()
+                ->getRepository("AppBundle:BoughtProducts")
+                ->findBy(['uid' => $userId, 'pid' => $productId]);
 
-            $product->setUid($userId);
-            $product->setPid($productId);
-            $em->persist($product);
+//            if (count($boughtProducts) == 0) {
+//                $product = new BoughtProducts();
+//
+//                $product->setUid($userId);
+//                $product->setPid($productId);
+//                $product->setQuantity($quantity);
+//
+//                $this->getDoctrine()->getManager()->persist($product);
+//                $this->getDoctrine()->getManager()->flush();
+//            } else {
+//                $params['quantity'] = $boughtProducts->getQuantity()
+                $product[$productId] = $boughtProducts;
+//            }
 
 //            $em->bindValue('foobar', $foobar);
         }
+//
+//        $em->execute();
+//
+//        $session->remove($userId);
 
-        $em->execute();
-
-        $session->remove($userId);
-
-        return $this->redirectToRoute('user_profile');
+        return $this->render('something.html.twig', [
+            'products' => $products
+        ]);
     }
 }

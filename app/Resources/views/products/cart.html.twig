@@ -19,7 +19,7 @@
                 {% for id, product in products %}
                     {#{{ dump(product) }}#}
                     <tr>
-                        <td><img class="small-picture" src="/images/{{ product.imageName }}"></td>
+                        <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
                         <td>{{ product.name }}</td>
                         <td>{{ product.price }} лв.</td>
                         <td>{{ product.quantity }}</td>
@@ -30,7 +30,7 @@
                 </tbody>
             </table>
             <div>
-                <a id="btn-buy" class="btn btn-primary" href="#">Buy all</a>
+                <a id="btn-buy" class="btn btn-primary" href="{{ path('buy_all_products') }}">Buy all</a>
             </div>
         {% else %}
             {{ products }}

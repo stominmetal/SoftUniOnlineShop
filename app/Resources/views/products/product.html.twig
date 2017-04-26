@@ -18,13 +18,15 @@
         </div>
         <div class="col-md-4 text-center">
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EDITOR') %}
-                {% set disabled = ' disabled' %}
+                {% set btn = '' %}
             {% else %}
-                {% set disabled = '' %}
+                {% set btn %}
+                    <a name="cart" class="btn btn-primary" href="{{ path('add_to_cart', {'id': product.id}) }}">Добави
+                        в
+                        количката</a>
+                {% endset %}
             {% endif %}
-            <a name="cart" class="btn btn-primary{{ disabled }}" href="{{ path('add_to_cart', {'id': product.id}) }}">Добави
-                в
-                количката</a>
+            {{ btn }}
         </div>
     </div>
 
