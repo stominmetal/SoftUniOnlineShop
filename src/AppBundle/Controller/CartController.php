@@ -50,6 +50,8 @@ class CartController extends Controller
             $session->set($userId, [$id => 1]);
         }
 
+        $this->get('session')->getFlashBag()->add('success', 'Product is added to cart successfully!');
+
         return $this->redirectToRoute('product_info', [
             'id' => $id
         ]);

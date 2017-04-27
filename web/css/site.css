@@ -214,3 +214,8 @@ footer {
 .learn-more {
     margin-bottom: 22px;
 }
+
+.username {
+    display: inline-block;
+    margin-right: 30px;
+}

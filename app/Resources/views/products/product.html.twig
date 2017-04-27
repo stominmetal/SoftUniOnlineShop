@@ -33,11 +33,11 @@
     <div class="data">
         <div class="pull-left">
             {% if product.imageName is null %}
-                <img src="/images/default.png" style="float: left">
+                <img src="/images/products/default.png" style="float: left">
             {% else %}
                 <img width="450" height="450" src="/images/products/{{ product.imageName }}">
             {% endif %}
         </div>
-        <div class="description">{{ product.description }}</div>
+        <div class="description">{{ product.description|raw }}</div>
     </div>
 {% endblock %}

@@ -255,33 +255,53 @@ class ProductsController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $mimeType = $editForm['imageName']->getData()->getMimeType();
 
-            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
-                if ($editForm['quantity']->getData() < 0) {
-                    return $this->render('products/edit_product.html.twig', array(
-                        'product' => $product,
-                        'edit_form' => $editForm->createView()
-                    ));
-                }
+            if (!($mimeType == 'image/jpeg' || $mimeType == 'image/jpg' || $mimeType == 'image/png')) {
+                $this->get('session')->getFlashBag()->add('error', 'File must ber JPG or PNG!');
 
-                if ($editForm['price']->getData() < 0) {
-                    return $this->render('products/edit_product.html.twig', array(
-                        'product' => $product,
-                        'edit_form' => $editForm->createView()
-                    ));
-                }
-
-                $extension = explode("/", $mimeType)[1];
-                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
-
-                $editForm['imageName']->getData()->move('images/products', $newImgName);
-
-                $product->setImageName($newImgName);
+                return $this->render('products/edit_product.html.twig', array(
+                    'product' => $product,
+                    'edit_form' => $editForm->createView()
+                ));
             }
+
+            if ($product->getQuantity() < 0) {
+                $this->get('session')->getFlashBag()->add('error', 'Quantity should be 0 or bigger!');
+
+                return $this->render('products/edit_product.html.twig', array(
+                    'product' => $product,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
+
+            if ($product->getPrice() <= 0) {
+                $this->get('session')->getFlashBag()->add('error', 'Price should be bigger than 0!');
+
+                return $this->render('products/edit_product.html.twig', array(
+                    'product' => $product,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
+
+//            if ($editForm['discount']->getData() < 0) {
+//                return $this->render('products/edit_product.html.twig', array(
+//                    'product' => $product,
+//                    'edit_form' => $editForm->createView()
+//                ));
+//            }
+
+            $extension = explode("/", $mimeType)[1];
+            $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+
+            $editForm['imageName']->getData()->move('images/products', $newImgName);
+
+            $product->setImageName($newImgName);
 
             $em->flush();
 
             return $this->redirectToRoute('admin_products');
         }
+
+        $this->get('session')->getFlashBag()->add('success', 'Product is edited successfully!');
 
         return $this->render('products/edit_product.html.twig', array(
             'product' => $product,

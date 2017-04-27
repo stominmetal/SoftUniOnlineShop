@@ -2,9 +2,11 @@
 
 {% block body_id 'login' %}
 
-{% block main %}
-
+{% block body %}
     <div class="container body-content span=8 offset=2">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
         <div class="well">
             <form class="form-horizontal" action="{{ path('security_login') }}" method="post">
                 <fieldset>
@@ -28,7 +30,6 @@
                             <button type="submit" class="btn btn-primary">Login</button>
                         </div>
                     </div>
-
                 </fieldset>
             </form>
         </div>

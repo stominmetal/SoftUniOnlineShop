@@ -4,7 +4,7 @@
 
 {% block main %}
     <div class="well">
-        <h2>{{ user.fullName }}</h2>
+        <h2 class="username">{{ user.fullName }}</h2>
         <span>Пари в портфейла: {{ user.money|number_format(2) }} лв.</span>
     </div>
     <table class="table text-center">
@@ -17,9 +17,10 @@
         </tr>
         </thead>
         <tbody>
+        <h3>Моите предмети</h3>
         {% for product in boughtProducts %}
             <tr>
-                <td><img class="small-picture" src="/images/{{ product.imageName }}"></td>
+                <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.price }} лв.</td>
                 <td>{{ product.quantity }}</td>

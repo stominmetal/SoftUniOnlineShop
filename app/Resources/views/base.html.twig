@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset("css/index.css") }}">
         <link rel="stylesheet" href="{{ asset("css/site.css") }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.2.0/jquery-confirm.min.css">
     {% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 </head>
@@ -68,7 +69,7 @@
                                 </li>
                                 <li>
                                     <a href="{{ path('user_profile') }}">
-                                        Моят Профил
+                                        Моят склад
                                     </a>
                                 </li>
                                 <li>
@@ -100,7 +101,23 @@
     {% block body %}
         <div class="row">
             <div id="main" class="col-sm-12">
-                {% block main %}{% endblock %}
+                {% if app.session.flashBag.has('success') %}
+                    <div>
+                        {% for message in app.session.flashBag.get('success') %}
+                            <div class="alert alert-success">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if app.session.flashBag.has('error') %}
+                    <div>
+                        {% for message in app.session.flashBag.get('error') %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block main %}
+                {% endblock %}
             </div>
         </div>
     {% endblock %}
@@ -119,6 +136,10 @@
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.2.0/jquery-confirm.min.js"></script>
+    <script>
+        $('.alert-success').fadeOut(3000);
+    </script>
 {% endblock %}
 
 </body>

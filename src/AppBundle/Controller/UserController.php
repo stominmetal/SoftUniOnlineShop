@@ -31,6 +31,27 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (strlen($user->getFullName()) < 5) {
+                $this->get('session')->getFlashBag()->add('error', 'Full name must be at least 5 charachters!');
+
+                return $this->render(
+                    'user/register.html.twig',
+                    [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
+
+            if (strlen($user->getPassword()) < 5) {
+                $this->get('session')->getFlashBag()->add('error', 'Password must be at least 5 charachters!');
+
+                return $this->render(
+                    'user/register.html.twig',
+                    [
+                        'form' => $form->createView()
+                    ]
+                );
+            }
 
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPassword());
@@ -46,6 +67,8 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
+            $this->get('session')->getFlashBag()->add('success', 'Register was successful!');
+
             return $this->redirectToRoute('security_login');
         }
 
@@ -54,7 +77,6 @@ class UserController extends Controller
             array('form' => $form->createView())
         );
     }
-
 
 
     /**

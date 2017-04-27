@@ -2,8 +2,15 @@
 
 {% block body_id 'register' %}
 
-{% block main %}
+{% block body %}
     <div class="container body-content span=8 offset=2">
+        {% if app.session.flashBag.has('error') %}
+            <div>
+                {% for message in app.session.flashBag.get('error') %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="well">
             <form class="form-horizontal" action="{{ path('user_register') }}" method="post">
                 <fieldset>

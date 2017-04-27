@@ -20,11 +20,10 @@
                     {#{{ dump(product) }}#}
                     <tr>
                         <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
-                        <td>{{ product.name }}</td>
+                        <td><а href="/product/{{ product.id }}">{{ product.name }}</а></td>
                         <td>{{ product.price }} лв.</td>
                         <td>{{ product.quantity }}</td>
-                        <td><a href="{{ path('remove_element_from_cart', {'id':id}) }}"><span
-                                        class="glyphicon glyphicon-remove"></span></a></td>
+                        <td><a href="#"><span data-id="{{ id }}" class="glyphicon glyphicon-remove remove-element"></span></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -36,4 +35,27 @@
             {{ products }}
         {% endif %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.remove-element').on('click', function () {
+            let productId = parseInt($(this).attr('data-id'));
+
+            $.confirm({
+                title: 'Confirm the delete',
+                content: "After clicking Confirm this item will be removed from the cart",
+                buttons: {
+                    confirm: function () {
+                        let route = "{{ path('remove_element_from_cart', {'id':'productID'}) }}";
+                        window.location = route.replace("productID", productId);
+                    },
+                    cancel: function () {
+
+                    }
+                }
+            })
+        })
+    </script>
 {% endblock %}
