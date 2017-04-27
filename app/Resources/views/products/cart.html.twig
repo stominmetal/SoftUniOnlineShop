@@ -6,26 +6,29 @@
     {#{{ dump(products) }}#}
     <div id="cart-products">
         {% if products is iterable %}
+            {% set wholePrice = 0 %}
             <table class="table">
                 <thead>
                 <tr>
-                    <th class="text-center">Снимка</th>
-                    <th class="text-center">Име</th>
-                    <th class="text-center">Цена</th>
-                    <th class="text-center">Количество</th>
+                    <th class="text-center">Image</th>
+                    <th class="text-center">Name</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Quantity</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for id, product in products %}
-                    {#{{ dump(product) }}#}
                     <tr>
                         <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
-                        <td><а href="/product/{{ product.id }}">{{ product.name }}</а></td>
-                        <td>{{ product.price }} лв.</td>
+                        <td><a href="/product/{{ id }}">{{ product.name }}</a></td>
+                        <td>{{ product.price|number_format(2) }} lv.</td>
                         <td>{{ product.quantity }}</td>
-                        <td><a href="#"><span data-id="{{ id }}" class="glyphicon glyphicon-remove remove-element"></span></a></td>
+                        <td><a href="#"><span data-id="{{ id }}"
+                                              class="glyphicon glyphicon-remove remove-element"></span></a></td>
                     </tr>
+                    {% set wholePrice = wholePrice + product.price * product.quantity %}
                 {% endfor %}
+                <tr><td class="text-right" id="priceAll" colspan="5">Price of all products: {{ wholePrice|number_format(2) }} lv.</td></tr>
                 </tbody>
             </table>
             <div>
@@ -52,7 +55,6 @@
                         window.location = route.replace("productID", productId);
                     },
                     cancel: function () {
-
                     }
                 }
             })

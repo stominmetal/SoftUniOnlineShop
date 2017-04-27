@@ -59,6 +59,29 @@ class User implements UserInterface
     private $role = 'ROLE_USER';
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="ban", type="boolean")
+     */
+    private $ban = false;
+
+    /**
+     * @return bool
+     */
+    public function isBan()
+    {
+        return $this->ban;
+    }
+
+    /**
+     * @param bool $ban
+     */
+    public function setBan(bool $ban)
+    {
+        $this->ban = $ban;
+    }
+
+    /**
      * @var ArrayCollection
      */
     private $articles;

@@ -116,40 +116,66 @@ class CartController extends Controller
 
         $userId = $this->getUser()->getId();
 
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
         $products = $session->get($userId);
 
-        $em = $this->getDoctrine()->getConnection();
+        $em = $this->getDoctrine()->getManager();
 
-        $query = "UPDATE bought_products SET quantity = :quantity WHERE uid = :uid AND pid = :pid";
-//
+        $sum = 0;
+
+        foreach ($products as $productId => $quantity) {
+            $boughtProducts = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->find($productId);
+
+            $sum += $boughtProducts->getPrice() * $quantity;
+        }
+
+        if ($user->getMoney() < $sum) {
+            $this->get('session')->getFlashBag()->add('error', 'You do not have enough money!');
+
+            return $this->redirectToRoute('cart_list');
+        } else {
+            $user->setMoney($user->getMoney() - $sum);
+        }
+
         foreach ($products as $productId => $quantity) {
             $boughtProducts = $this->getDoctrine()
                 ->getRepository("AppBundle:BoughtProducts")
-                ->findBy(['uid' => $userId, 'pid' => $productId]);
+                ->findOneBy(['uid' => $userId, 'pid' => $productId]);
 
-//            if (count($boughtProducts) == 0) {
-//                $product = new BoughtProducts();
-//
-//                $product->setUid($userId);
-//                $product->setPid($productId);
-//                $product->setQuantity($quantity);
-//
-//                $this->getDoctrine()->getManager()->persist($product);
-//                $this->getDoctrine()->getManager()->flush();
-//            } else {
-//                $params['quantity'] = $boughtProducts->getQuantity()
-                $product[$productId] = $boughtProducts;
-//            }
+            if ($boughtProducts->getQuantity() < $quantity) {
+                $this->get('session')->getFlashBag()->add('error', 'Product you want to bay has less quantity than you need!');
 
-//            $em->bindValue('foobar', $foobar);
+                return $this->redirectToRoute('cart_list');
+            }
+
+            if (is_null($boughtProducts)) {
+                $product = new BoughtProducts();
+
+                $product->setUid($userId);
+                $product->setPid($productId);
+                $product->setQuantity($quantity);
+
+                $em->persist($product);
+            } else {
+                $boughtProducts->setQuantity(
+                    $boughtProducts->getQuantity() + $quantity
+                );
+
+                $em->persist($boughtProducts);
+            }
         }
-//
-//        $em->execute();
-//
-//        $session->remove($userId);
 
-        return $this->render('something.html.twig', [
-            'products' => $products
-        ]);
+        $em->flush();
+
+        $session->remove($userId);
+
+        $this->get('session')->getFlashBag()->add('success', 'Products were bought successfully!');
+
+        return $this->redirectToRoute('blog_index');
     }
 }

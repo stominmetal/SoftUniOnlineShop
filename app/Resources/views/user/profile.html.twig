@@ -5,15 +5,15 @@
 {% block main %}
     <div class="well">
         <h2 class="username">{{ user.fullName }}</h2>
-        <span>Пари в портфейла: {{ user.money|number_format(2) }} лв.</span>
+        <span>Money in the bank: {{ user.money|number_format(2) }} lv.</span>
     </div>
     <table class="table text-center">
         <thead>
         <tr>
-            <th class="text-center">Снимка</th>
-            <th class="text-center">Име</th>
-            <th class="text-center">Цена</th>
-            <th class="text-center">Количество</th>
+            <th class="text-center">Image</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Quantity</th>
         </tr>
         </thead>
         <tbody>

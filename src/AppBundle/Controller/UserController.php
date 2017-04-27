@@ -116,4 +116,31 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
+
+    /**
+     * @Route("/users", name="admin_users")
+     */
+    function listUsers() {
+        $users = $this->getDoctrine()
+            ->getRepository("AppBundle:User")
+            ->findAll();
+
+        return $this->render('products/admin_users.html.twig', [
+            'users' => $users
+        ]);
+    }
+
+    /**
+     * @Route("/edit-user", name="edit_user")
+     */
+    function editUser() {
+
+    }
+
+    /**
+     * @Route("/ban-user", name="ban_user")
+     */
+    function banUser() {
+
+    }
 }

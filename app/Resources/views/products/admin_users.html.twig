@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+
+    <div class="well">
+        <span class="categories-product-title">Users</span>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Email</th>
+            <th class="text-center">Full Name</th>
+            <th class="text-center">Money</th>
+            <th class="text-center">Possessions</th>
+        </tr>
+        </thead>
+        <tbody class="text-center">
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.fullName }}</td>
+                <td>{{ user.money|number_format(2) }} lv.</td>
+                <td><a href="#">Go to user possessions</a></td>
+                <td>
+                    <a href="{{ path('edit_user', {'id' : user.id}) }}"><span
+                                class="glyphicon glyphicon-edit edit"></span></a>
+                    <a href="{{ path('ban_user', {'id' : user.id}) }}"> <span
+                                class="glyphicon glyphicon-ban-circle trash"></span></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

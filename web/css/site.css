@@ -219,3 +219,10 @@ footer {
     display: inline-block;
     margin-right: 30px;
 }
+
+#priceAll {
+    background-color: #f5f5f5;
+    padding-right: 80px;
+    border-top: 2px solid #bebebe;
+    font-weight: bold;
+}

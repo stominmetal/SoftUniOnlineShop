@@ -11,19 +11,17 @@
 
     <div class="container-fluid product-info">
         <div class="col-md-4 text-center text-big">
-            <strong>Цена:</strong> {{ product.price }} лв.
+            <strong>Price:</strong> {{ product.price }} lv.
         </div>
         <div class="col-md-4 text-center text-big">
-            <strong>Количество:</strong> {{ product.quantity }}
+            <strong>Quantity:</strong> {{ product.quantity }}
         </div>
         <div class="col-md-4 text-center">
             {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EDITOR') %}
                 {% set btn = '' %}
             {% else %}
                 {% set btn %}
-                    <a name="cart" class="btn btn-primary" href="{{ path('add_to_cart', {'id': product.id}) }}">Добави
-                        в
-                        количката</a>
+                    <a name="cart" class="btn btn-primary" href="{{ path('add_to_cart', {'id': product.id}) }}">Add to cart</a>
                 {% endset %}
             {% endif %}
             {{ btn }}
