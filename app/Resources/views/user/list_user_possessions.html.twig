@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="well text-center list-items">{{ userFullName }}'s possessions</div>
+    <table class="table text-center">
+        <thead>
+        <tr>
+            <th class="text-center">Image</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in boughtProducts %}
+            <tr>
+                <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} лв.</td>
+                <td>{{ product.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

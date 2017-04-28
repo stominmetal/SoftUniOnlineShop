@@ -4,7 +4,6 @@ security:
         # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
         Symfony\Component\Security\Core\User\User: plaintext
         AppBundle\Entity\User: bcrypt
-#        Symfony\Component\Security\Core\User\User: bcrypt
 
     providers:
         # in this example, users are stored via Doctrine in the database
@@ -60,6 +59,7 @@ security:
         - {path: /ban-user, roles: ROLE_ADMIN}
         - {path: /unban-user, roles: ROLE_ADMIN}
         - {path: /edit-user, roles: ROLE_ADMIN}
+        - {path: /user-possessions, roles: ROLE_ADMIN}
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }

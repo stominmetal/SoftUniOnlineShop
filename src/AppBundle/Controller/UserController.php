@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\BoughtProducts;
 use AppBundle\Entity\User;
+use AppBundle\Form\EditUserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -120,7 +121,7 @@ class UserController extends Controller
     /**
      * @Route("/users", name="admin_users")
      */
-    function listUsers()
+    public function listUsers()
     {
         $users = $this->getDoctrine()
             ->getRepository("AppBundle:User")
@@ -134,38 +135,31 @@ class UserController extends Controller
     /**
      * @Route("/edit-user/{id}", name="edit_user")
      */
-    function editUser(Request $request, User $user)
+    public function editUser(Request $request, User $user)
     {
-        $editForm = $this->createForm(UserType::class, $user);
+        $editForm = $this->createForm(EditUserType::class, $user);
         $editForm->handleRequest($request);
 
-//        $em = $this->getDoctrine()->getManager();
-//
-//        if ($editForm->isSubmitted() && $editForm->isValid()) {
-//            $mimeType = $editForm['imageName']->getData()->getMimeType();
-//
-//            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
-//                $extension = explode("/", $mimeType)[1];
-//                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
-//
-//                $editForm['imageName']->getData()->move('images/categories', $newImgName);
-//
-//                $category->setImageName($newImgName);
-//            }
-//
-//            if ($category->getDiscount() < 0) {
-//                $this->get('session')->getFlashBag()->add('error', 'Discount should be 0 or bigger!');
-//
-//                return $this->render('products/edit_category.html.twig', array(
-//                    'category' => $category,
-//                    'edit_form' => $editForm->createView()
-//                ));
-//            }
-//
-//            $em->flush();
-//
-//            return $this->redirectToRoute('admin_categories');
-//        }
+        $em = $this->getDoctrine()->getManager();
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if ($user->getMoney() < 0) {
+                $this->get('session')->getFlashBag()->add('error', 'Money should be 0 or bigger!');
+
+                return $this->render('user/edit_user.html.twig', array(
+                    'user' => $user,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
+
+            $user->setFullName($user->getFullName());
+            $user->setMoney($user->getMoney());
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('success', 'User properties were edited successfully!');
+
+            return $this->redirectToRoute('admin_users');
+        }
 
         return $this->render('user/edit_user.html.twig', array(
             'user' => $user,
@@ -176,7 +170,7 @@ class UserController extends Controller
     /**
      * @Route("/ban-user/{id}", name="ban_user")
      */
-    function banUser(int $id)
+    public function banUser(int $id)
     {
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
@@ -186,13 +180,15 @@ class UserController extends Controller
         $this->getDoctrine()->getManager()->persist($user);
         $this->getDoctrine()->getManager()->flush();
 
+        $this->get('session')->getFlashBag()->add('success', 'User was banned successfully!');
+
         return $this->redirectToRoute('admin_users');
     }
 
     /**
      * @Route("/unban-user/{id}", name="unban_user")
      */
-    function unbanUser(int $id)
+    public function unbanUser(int $id)
     {
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
@@ -202,6 +198,70 @@ class UserController extends Controller
         $this->getDoctrine()->getManager()->persist($user);
         $this->getDoctrine()->getManager()->flush();
 
+        $this->get('session')->getFlashBag()->add('success', 'User was unbanned successfully!');
+
         return $this->redirectToRoute('admin_users');
+    }
+
+    /**
+     * @Route("/delete-user/{id}", name="delete_user")
+     */
+    public function deleteUser(int $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($id);
+
+        $boughtProducts = $this->getDoctrine()
+            ->getRepository('AppBundle:BoughtProducts')
+            ->findBy(['uid' => $id]);
+
+        foreach ($boughtProducts as $boughtProduct) {
+            $em->remove($boughtProduct);
+        }
+
+        $em->remove($user);
+        $em->flush();
+
+        $this->get('session')->getFlashBag()->add('success', 'User and his product(s) were deleted successfully!');
+
+        return $this->redirectToRoute('admin_users');
+    }
+
+    /**
+     * @Route("/user-possessions/{id}", name="list_user_possessions")
+     */
+    public function listUserPossessions(int $id)
+    {
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($id);
+
+        $boughtProducts = $this->getDoctrine()
+            ->getRepository('AppBundle:BoughtProducts')
+            ->findBy(['uid' => $id]);
+
+        $products = [];
+
+        /**
+         * @var $product BoughtProducts
+         */
+        foreach ($boughtProducts as $product) {
+            $productId = $product->getPid();
+            $quantity = $product->getQuantity();
+
+            $productProperties = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findOneBy(['id' => $productId]);
+
+            $products[] = ['name' => $productProperties->getName(), 'imageName' => $productProperties->getImageName(), 'price' => $productProperties->getPrice(), 'quantity' => $quantity];
+        }
+
+        return $this->render('user/list_user_possessions.html.twig', [
+            'boughtProducts' => $products,
+            'userFullName' => $user->getFullName()
+        ]);
     }
 }

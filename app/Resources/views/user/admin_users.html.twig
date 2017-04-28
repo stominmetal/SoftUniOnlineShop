@@ -21,14 +21,14 @@
             {% if (user.ban == 1) %}
                 {% set class = "danger" %}
                 {% set banned = "Yes" %}
-                {% set a %}
+                {% set aBan %}
                     <a href="#" data-id="{{ user.id }}"> <span
                                 class="glyphicon glyphicon-ok-circle view unban-user"></span></a>
                 {% endset %}
             {% else %}
                 {% set class = "" %}
                 {% set banned = "No" %}
-                {% set a %}
+                {% set aBan %}
                     <a href="#" data-id="{{ user.id }}"> <span
                                 class="glyphicon glyphicon-ban-circle trash ban-user"></span></a>
                 {% endset %}
@@ -39,12 +39,14 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.fullName }}</td>
                 <td>{{ user.money|number_format(2) }} lv.</td>
-                <td><a href="#">Go to user possessions</a></td>
+                <td><a href="{{ path('list_user_possessions', {'id' : user.id}) }}">Items</a></td>
                 <td>{{ banned }}</td>
                 <td>
                     <a href="{{ path('edit_user', {'id' : user.id}) }}"><span
                                 class="glyphicon glyphicon-edit edit"></span></a>
-                    {{ a }}
+                    {{ aBan }}
+                    <a href="#" data-id="{{ user.id }}"><span
+                                class="glyphicon glyphicon-trash delete-user user-trash"></span></a>
                 </td>
             </tr>
         {% endfor %}
@@ -83,6 +85,23 @@
                     buttons: {
                         confirm: function () {
                             let route = "{{ path('unban_user', {'id' : 'userID'}) }}";
+                            window.location = route.replace("userID", userId);
+                        },
+                        cancel: function () {
+                        }
+                    }
+                })
+            });
+
+            $('.delete-user').on('click', function () {
+                let userId = parseInt($(this).parent().attr('data-id'));
+
+                $.confirm({
+                    title: 'Confirm the Delete',
+                    content: "After clicking Confirm this user will be removed permanently",
+                    buttons: {
+                        confirm: function () {
+                            let route = "{{ path('delete_user', {'id' : 'userID'}) }}";
                             window.location = route.replace("userID", userId);
                         },
                         cancel: function () {

@@ -147,10 +147,16 @@ class CartController extends Controller
                 ->getRepository("AppBundle:BoughtProducts")
                 ->findOneBy(['uid' => $userId, 'pid' => $productId]);
 
-            if ($boughtProducts->getQuantity() < $quantity) {
+            $product = $this->getDoctrine()
+                ->getRepository('AppBundle:Products')
+                ->find($productId);
+
+            if ($product->getQuantity() < $quantity) {
                 $this->get('session')->getFlashBag()->add('error', 'Product you want to bay has less quantity than you need!');
 
                 return $this->redirectToRoute('cart_list');
+            } else {
+                $product->setQuantity($product->getQuantity() - $quantity);
             }
 
             if (is_null($boughtProducts)) {

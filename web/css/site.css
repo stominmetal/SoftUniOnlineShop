@@ -196,6 +196,11 @@ footer {
     color: red;
 }
 
+.user-trash {
+    color: #262626;
+    margin-left: 5px;
+}
+
 .view {
     color: #43b946;
 }
@@ -225,4 +230,8 @@ footer {
     padding-right: 80px;
     border-top: 2px solid #bebebe;
     font-weight: bold;
+}
+
+.list-items {
+    font-size: 24px;
 }

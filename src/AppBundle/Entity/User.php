@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User implements AdvancedUserInterface
+class User implements UserInterface
 {
     /**
      * @var int
@@ -67,22 +67,6 @@ class User implements AdvancedUserInterface
     private $ban = false;
 
     /**
-     * @return bool
-     */
-    public function isBan()
-    {
-        return $this->ban;
-    }
-
-    /**
-     * @param bool $ban
-     */
-    public function setBan(bool $ban)
-    {
-        $this->ban = $ban;
-    }
-
-    /**
      * @var ArrayCollection
      */
     private $articles;
@@ -110,6 +94,22 @@ class User implements AdvancedUserInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBan()
+    {
+        return $this->ban;
+    }
+
+    /**
+     * @param bool $ban
+     */
+    public function setBan(bool $ban)
+    {
+        $this->ban = $ban;
     }
 
     /**
@@ -292,65 +292,5 @@ class User implements AdvancedUserInterface
     public function setRole(string $role)
     {
         $this->role = $role;
-    }
-
-    /**
-     * Checks whether the user's account has expired.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw an AccountExpiredException and prevent login.
-     *
-     * @return bool true if the user's account is non expired, false otherwise
-     *
-     * @see AccountExpiredException
-     */
-    public function isAccountNonExpired()
-    {
-        // TODO: Implement isAccountNonExpired() method.
-    }
-
-    /**
-     * Checks whether the user is locked.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a LockedException and prevent login.
-     *
-     * @return bool true if the user is not locked, false otherwise
-     *
-     * @see LockedException
-     */
-    public function isAccountNonLocked()
-    {
-        return self::isBan();
-    }
-
-    /**
-     * Checks whether the user's credentials (password) has expired.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a CredentialsExpiredException and prevent login.
-     *
-     * @return bool true if the user's credentials are non expired, false otherwise
-     *
-     * @see CredentialsExpiredException
-     */
-    public function isCredentialsNonExpired()
-    {
-        // TODO: Implement isCredentialsNonExpired() method.
-    }
-
-    /**
-     * Checks whether the user is enabled.
-     *
-     * Internally, if this method returns false, the authentication system
-     * will throw a DisabledException and prevent login.
-     *
-     * @return bool true if the user is enabled, false otherwise
-     *
-     * @see DisabledException
-     */
-    public function isEnabled()
-    {
-        // TODO: Implement isEnabled() method.
     }
 }
