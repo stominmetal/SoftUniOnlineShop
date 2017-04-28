@@ -24,7 +24,7 @@
                 <td>{{ category.discount }}</td>
                 <td>
                     <a href="{{ path('edit_category', {'id' : category.id}) }}"><span class="glyphicon glyphicon-edit edit-cat"></span></a>
-                    <a href="{{ path('category_delete', {'id' : category.id}) }}"><span class="glyphicon glyphicon-trash trash"></span></a>
+                    <a href="#" data-id="{{ category.id }}"><span class="glyphicon glyphicon-trash delete-category trash"></span></a>
                 </td>
             </tr>
         {% endfor %}
@@ -32,3 +32,24 @@
     </table>
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.delete-category').on('click', function () {
+            let categoryId = parseInt($(this).parent().attr('data-id'));
+
+            $.confirm({
+                title: 'Confirm the Delete',
+                content: "After clicking Confirm this category will be deleted",
+                buttons: {
+                    confirm: function () {
+                        let route = "{{ path('category_delete', {'id' : 'categoryID'}) }}";
+                        window.location = route.replace("categoryID", categoryId);
+                    },
+                    cancel: function () {
+                    }
+                }
+            })
+        });
+    </script>
+{% endblock %}

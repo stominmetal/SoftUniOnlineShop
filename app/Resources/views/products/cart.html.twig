@@ -23,8 +23,7 @@
                         <td><a href="/product/{{ id }}">{{ product.name }}</a></td>
                         <td>{{ product.price|number_format(2) }} lv.</td>
                         <td>{{ product.quantity }}</td>
-                        <td><a href="#"><span data-id="{{ id }}"
-                                              class="glyphicon glyphicon-remove remove-element"></span></a></td>
+                        <td><a href="#" data-id="{{ id }}"><span class="glyphicon glyphicon-remove remove-element"></span></a></td>
                     </tr>
                     {% set wholePrice = wholePrice + product.price * product.quantity %}
                 {% endfor %}
@@ -44,7 +43,7 @@
     {{ parent() }}
     <script>
         $('.remove-element').on('click', function () {
-            let productId = parseInt($(this).attr('data-id'));
+            let productId = parseInt($(this).parent().attr('data-id'));
 
             $.confirm({
                 title: 'Confirm the delete',

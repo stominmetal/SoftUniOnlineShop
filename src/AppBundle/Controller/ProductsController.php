@@ -333,6 +333,15 @@ class ProductsController extends Controller
                 $category->setImageName($newImgName);
             }
 
+            if ($category->getDiscount() < 0) {
+                $this->get('session')->getFlashBag()->add('error', 'Discount should be 0 or bigger!');
+
+                return $this->render('products/edit_category.html.twig', array(
+                    'category' => $category,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
+
             $em->flush();
 
             return $this->redirectToRoute('admin_categories');
@@ -351,9 +360,21 @@ class ProductsController extends Controller
      */
     public function deleteProduct(Products $product)
     {
+        $boughtProduct = $this->getDoctrine()
+            ->getRepository('AppBundle:BoughtProducts')
+            ->find($product->getId());
+
+        if (!is_null($boughtProduct)) {
+            $this->get('session')->getFlashBag()->add('error', 'Product is bought by user!');
+
+            return $this->redirectToRoute('admin_products');
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($product);
         $em->flush();
+
+        $this->get('session')->getFlashBag()->add('success', 'Product was deleted successfully!');
 
         return $this->redirectToRoute('admin_products');
     }
@@ -369,13 +390,14 @@ class ProductsController extends Controller
             ->getRepository('AppBundle:Products')
             ->findBy(['catId' => $category->getId()]);
 
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($category);
+        if (count($products) > 0) {
+            $this->get('session')->getFlashBag()->add('error', 'Category has 1 or more products and should not be deleted!');
 
-        foreach ($products as $product) {
-            self::deleteProduct($product);
+            return $this->redirectToRoute('admin_categories');
         }
 
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($category);
         $em->flush();
 
         return $this->redirectToRoute('admin_categories');

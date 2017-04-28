@@ -112,7 +112,7 @@
                 {% if app.session.flashBag.has('error') %}
                     <div>
                         {% for message in app.session.flashBag.get('error') %}
-                            <div class="alert alert-danger">{{ message }}</div>
+                            <div class="alert alert-danger remove-error-alert">{{ message }}</div>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -139,6 +139,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.2.0/jquery-confirm.min.js"></script>
     <script>
         $('.alert-success').fadeOut(3000);
+    </script>
+    <script>
+        $('.remove-error-alert').on('click', function () {
+            $(this).fadeOut(1500);
+        })
     </script>
 {% endblock %}
 

@@ -57,6 +57,9 @@ security:
         - {path: /edit-category, roles: [ROLE_EDITOR, ROLE_ADMIN]}
         - {path: /edit-product, roles: [ROLE_EDITOR, ROLE_ADMIN]}
         - {path: /delete-product, roles: [ROLE_EDITOR, ROLE_ADMIN]}
+        - {path: /ban-user, roles: ROLE_ADMIN}
+        - {path: /unban-user, roles: ROLE_ADMIN}
+        - {path: /edit-user, roles: ROLE_ADMIN}
         # this is a catch-all for the admin area
         # additional security lives in the controllers
 #        - { path: '^/(%locale%)/admin', roles: ROLE_ADMIN }

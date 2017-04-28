@@ -120,27 +120,88 @@ class UserController extends Controller
     /**
      * @Route("/users", name="admin_users")
      */
-    function listUsers() {
+    function listUsers()
+    {
         $users = $this->getDoctrine()
             ->getRepository("AppBundle:User")
             ->findAll();
 
-        return $this->render('products/admin_users.html.twig', [
+        return $this->render('user/admin_users.html.twig', [
             'users' => $users
         ]);
     }
 
     /**
-     * @Route("/edit-user", name="edit_user")
+     * @Route("/edit-user/{id}", name="edit_user")
      */
-    function editUser() {
+    function editUser(Request $request, User $user)
+    {
+        $editForm = $this->createForm(UserType::class, $user);
+        $editForm->handleRequest($request);
 
+//        $em = $this->getDoctrine()->getManager();
+//
+//        if ($editForm->isSubmitted() && $editForm->isValid()) {
+//            $mimeType = $editForm['imageName']->getData()->getMimeType();
+//
+//            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
+//                $extension = explode("/", $mimeType)[1];
+//                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
+//
+//                $editForm['imageName']->getData()->move('images/categories', $newImgName);
+//
+//                $category->setImageName($newImgName);
+//            }
+//
+//            if ($category->getDiscount() < 0) {
+//                $this->get('session')->getFlashBag()->add('error', 'Discount should be 0 or bigger!');
+//
+//                return $this->render('products/edit_category.html.twig', array(
+//                    'category' => $category,
+//                    'edit_form' => $editForm->createView()
+//                ));
+//            }
+//
+//            $em->flush();
+//
+//            return $this->redirectToRoute('admin_categories');
+//        }
+
+        return $this->render('user/edit_user.html.twig', array(
+            'user' => $user,
+            'edit_form' => $editForm->createView()
+        ));
     }
 
     /**
-     * @Route("/ban-user", name="ban_user")
+     * @Route("/ban-user/{id}", name="ban_user")
      */
-    function banUser() {
+    function banUser(int $id)
+    {
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($id);
 
+        $user->setBan(true);
+        $this->getDoctrine()->getManager()->persist($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('admin_users');
+    }
+
+    /**
+     * @Route("/unban-user/{id}", name="unban_user")
+     */
+    function unbanUser(int $id)
+    {
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($id);
+
+        $user->setBan(false);
+        $this->getDoctrine()->getManager()->persist($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('admin_users');
     }
 }

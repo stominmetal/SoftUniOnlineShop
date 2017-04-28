@@ -29,12 +29,37 @@
                 <td>{{ product.quantity }}</td>
                 <td>{{ product.discount }}</td>
                 <td>
-                    <a href="{{ path('product_info', {'id' : product.id}) }}"><span class="glyphicon glyphicon-eye-open view"></span></a>
-                    <a href="{{ path('edit_product', {'id' : product.id}) }}"><span class="glyphicon glyphicon-edit edit"></span></a>
-                    <a href="{{ path('product_delete', {'id' : product.id}) }}"> <span class="glyphicon glyphicon-trash trash"></span></a>
+                    <a href="{{ path('product_info', {'id' : product.id}) }}"><span
+                                class="glyphicon glyphicon-eye-open view"></span></a>
+                    <a href="{{ path('edit_product', {'id' : product.id}) }}"><span
+                                class="glyphicon glyphicon-edit edit"></span></a>
+                    <a href="#" data-id="{{ product.id }}"> <span
+                                class="glyphicon glyphicon-trash trash delete-product"></span></a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('.delete-product').on('click', function () {
+            let productId = parseInt($(this).parent().attr('data-id'));
+
+            $.confirm({
+                title: 'Confirm the Delete',
+                content: "After clicking Confirm this product will be deleted",
+                buttons: {
+                    confirm: function () {
+                        let route = "{{ path('product_delete', {'id' : 'productID'}) }}";
+                        window.location = route.replace("productID", productId);
+                    },
+                    cancel: function () {
+                    }
+                }
+            })
+        });
+    </script>
 {% endblock %}

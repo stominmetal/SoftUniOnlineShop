@@ -20,6 +20,7 @@ class ProductType extends AbstractType
             ->add('name', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('description', TextareaType::class, ['attr' => ['class' => 'form-control col-sm-4', 'rows' => 10]])
             ->add('catId', ChoiceType::class, [
+                'label' => 'Category',
                 'attr' => ['class' => 'form-control col-sm-4'],
                 'choices' => [
                     'Phones' => 1,
