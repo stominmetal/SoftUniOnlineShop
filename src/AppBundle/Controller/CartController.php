@@ -22,13 +22,23 @@ class CartController extends Controller
      */
     public function addToCart(Request $request)
     {
+        $userId = $this->getUser()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
+        if ($user->isBan()) {
+            $this->get('session')->getFlashBag()->add('error', 'This functionality is not allowed for banned users!');
+
+            return $this->redirectToRoute('blog_index');
+        }
+
         $id = intval($request->attributes->get('id'));
 
         $product = $this->getDoctrine()
             ->getRepository("AppBundle:Products")
             ->findOneBy(['id' => $id]);
-
-        $userId = $this->getUser()->getId();
 
         $session = $request->getSession();
 
@@ -62,6 +72,18 @@ class CartController extends Controller
      */
     public function listCart(Request $request)
     {
+        $userId = $this->getUser()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
+        if ($user->isBan()) {
+            $this->get('session')->getFlashBag()->add('error', 'This functionality is not allowed for banned users!');
+
+            return $this->redirectToRoute('blog_index');
+        }
+
         $session = $request->getSession();
 
         $products = $session->get($this->getUser()->getId());
@@ -119,6 +141,12 @@ class CartController extends Controller
         $user = $this->getDoctrine()
             ->getRepository('AppBundle:User')
             ->find($userId);
+
+        if ($user->isBan()) {
+            $this->get('session')->getFlashBag()->add('error', 'This functionality is not allowed for banned users!');
+
+            return $this->redirectToRoute('blog_index');
+        }
 
         $products = $session->get($userId);
 

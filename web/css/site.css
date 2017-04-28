@@ -110,12 +110,12 @@ footer {
 }
 
 .product {
-    /*align-items: stretch;*/
+    align-items: stretch;
     /*margin: 20px;*/
-    display: inline-block;
+    /*display: inline-block;*/
     /*width: 30%;*/
     /*margin: 20px;*/
-    height: 770px;
+    /*height: 40%;*/
 }
 
 .categories-image {
@@ -153,7 +153,7 @@ footer {
     margin-bottom: 15px;
 }
 
-#category:hover {
+.category:hover {
     cursor: pointer;
     background: #1e699f;
     color: #ffffff;
@@ -234,4 +234,8 @@ footer {
 
 .list-items {
     font-size: 24px;
+}
+
+.products-row {
+    display: flex;
 }

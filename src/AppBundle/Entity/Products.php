@@ -57,7 +57,6 @@ class Products
     private $quantity;
 
     /**
-     * @var string
      *
      * @ORM\Column(name="image_name", type="string", length=255)
      */
@@ -241,8 +240,6 @@ class Products
 
     /**
      * Set imageName
-     *
-     * @param string $imageName
      *
      * @return Products
      */

@@ -15,7 +15,7 @@
         {% for product in boughtProducts %}
             <tr>
                 <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
-                <td>{{ product.name }}</td>
+                <td><a href="{{ path('product_info', {'id' : product.id}) }}">{{ product.name }}</a></td>
                 <td>{{ product.price }} лв.</td>
                 <td>{{ product.quantity }}</td>
             </tr>

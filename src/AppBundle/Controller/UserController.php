@@ -92,6 +92,12 @@ class UserController extends Controller
             ->getRepository('AppBundle:User')
             ->find($userId);
 
+        if ($user->isBan()) {
+            $this->get('session')->getFlashBag()->add('error', 'This functionality is not allowed for banned users!');
+
+            return $this->redirectToRoute('blog_index');
+        }
+
         $boughtProducts = $this->getDoctrine()
             ->getRepository("AppBundle:BoughtProducts")
             ->findBy(['uid' => $userId]);
@@ -256,7 +262,7 @@ class UserController extends Controller
                 ->getRepository("AppBundle:Products")
                 ->findOneBy(['id' => $productId]);
 
-            $products[] = ['name' => $productProperties->getName(), 'imageName' => $productProperties->getImageName(), 'price' => $productProperties->getPrice(), 'quantity' => $quantity];
+            $products[] = ['id' => $productId, 'name' => $productProperties->getName(), 'imageName' => $productProperties->getImageName(), 'price' => $productProperties->getPrice(), 'quantity' => $quantity];
         }
 
         return $this->render('user/list_user_possessions.html.twig', [

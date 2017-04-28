@@ -9,13 +9,12 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CategoryType extends AbstractType
+class EditCategoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4'], 'data_class' => null])
             ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
     }
 

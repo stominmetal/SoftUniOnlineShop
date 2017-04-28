@@ -6,7 +6,7 @@
     <div class="text-center">
         <h2>Categories</h2>
         {% for category in categories %}
-            <div onclick="doSomething({{ category.id }})" id="category" class="col-md-3 text-center border">
+            <div onclick="doSomething({{ category.id }})" class="col-md-3 text-center border category">
                 <h2 class="page-header">{{ category.name }}</h2>
                 <p>Products: {{ category.quantity }}</p>
             </div>

@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use SoftUniBlogBundle\Entity\User;
-use SoftUniBlogBundle\Form\UserType;
+use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

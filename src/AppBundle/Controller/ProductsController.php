@@ -12,11 +12,14 @@ use AppBundle\Entity\Products;
 use AppBundle\Entity\Categories;
 use AppBundle\Entity\User;
 use AppBundle\Form\CategoryType;
+use AppBundle\Form\EditCategoryType;
+use AppBundle\Form\ProductEditType;
 use AppBundle\Form\ProductType;
 use AppBundle\Form\UserType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,8 +59,30 @@ class ProductsController extends Controller
             ->getRepository("AppBundle:Products")
             ->findBy(['catId' => $catId]);
 
+        $count = count($products);
+        $len = 0;
+
+        $debug = [];
+
+        $result = [];
+        $tmp = [];
+
+        for ($i = 0; $i < $count; $i++) {
+            if ($len == 4) {
+                $result[] = $tmp;
+                $tmp = [];
+                $tmp[] = $products[$i];
+                $len = 0;
+            } else {
+                $tmp[] = $products[$i];
+                $len++;
+            }
+        }
+
+        $result[] = $tmp;
+
         return $this->render("products/index.html.twig", [
-            'products' => $products,
+            'result' => $result,
             'catId' => $catId
         ]);
     }
@@ -84,8 +109,6 @@ class ProductsController extends Controller
         $product = new Products();
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
-
-        $flag = false;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $mimeType = $form['imageName']->getData()->getMimeType();
@@ -162,8 +185,6 @@ class ProductsController extends Controller
         $category = new Categories();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
-
-        $flag = false;
 
         if ($form->isSubmitted() && $form->isValid()) {
             $mimeType = $form['imageName']->getData()->getMimeType();
@@ -247,24 +268,13 @@ class ProductsController extends Controller
      */
     public function editProduct(Request $request, Products $product)
     {
-        $editForm = $this->createForm(ProductType::class, $product);
+        $editForm = $this->createForm(ProductEditType::class, $product);
         $editForm->handleRequest($request);
 
         $em = $this->getDoctrine()->getManager();
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $mimeType = $editForm['imageName']->getData()->getMimeType();
-
-            if (!($mimeType == 'image/jpeg' || $mimeType == 'image/jpg' || $mimeType == 'image/png')) {
-                $this->get('session')->getFlashBag()->add('error', 'File must ber JPG or PNG!');
-
-                return $this->render('products/edit_product.html.twig', array(
-                    'product' => $product,
-                    'edit_form' => $editForm->createView()
-                ));
-            }
-
-            if ($product->getQuantity() < 0) {
+            if ($editForm['quantity']->getData() < 0) {
                 $this->get('session')->getFlashBag()->add('error', 'Quantity should be 0 or bigger!');
 
                 return $this->render('products/edit_product.html.twig', array(
@@ -273,7 +283,7 @@ class ProductsController extends Controller
                 ));
             }
 
-            if ($product->getPrice() <= 0) {
+            if ($editForm['price']->getData() <= 0) {
                 $this->get('session')->getFlashBag()->add('error', 'Price should be bigger than 0!');
 
                 return $this->render('products/edit_product.html.twig', array(
@@ -282,19 +292,14 @@ class ProductsController extends Controller
                 ));
             }
 
-//            if ($editForm['discount']->getData() < 0) {
-//                return $this->render('products/edit_product.html.twig', array(
-//                    'product' => $product,
-//                    'edit_form' => $editForm->createView()
-//                ));
-//            }
+            if (!($editForm['discount']->getData() >= 0 &&  $editForm['discount']->getData() <= 100)) {
+                $this->get('session')->getFlashBag()->add('error', 'Discount should be number between 0 and 100!');
 
-            $extension = explode("/", $mimeType)[1];
-            $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
-
-            $editForm['imageName']->getData()->move('images/products', $newImgName);
-
-            $product->setImageName($newImgName);
+                return $this->render('products/edit_product.html.twig', array(
+                    'product' => $product,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
 
             $em->flush();
 
@@ -316,24 +321,13 @@ class ProductsController extends Controller
      */
     public function editCategory(Request $request, Categories $category)
     {
-        $editForm = $this->createForm(CategoryType::class, $category);
+        $editForm = $this->createForm(EditCategoryType::class, $category);
         $editForm->handleRequest($request);
 
         $em = $this->getDoctrine()->getManager();
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $mimeType = $editForm['imageName']->getData()->getMimeType();
-
-            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
-                $extension = explode("/", $mimeType)[1];
-                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
-
-                $editForm['imageName']->getData()->move('images/categories', $newImgName);
-
-                $category->setImageName($newImgName);
-            }
-
-            if ($category->getDiscount() < 0) {
+            if (!($editForm['discount']->getData() >= 0 &&  $editForm['discount']->getData() <= 100)) {
                 $this->get('session')->getFlashBag()->add('error', 'Discount should be 0 or bigger!');
 
                 return $this->render('products/edit_category.html.twig', array(

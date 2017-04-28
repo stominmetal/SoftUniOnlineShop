@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductType extends AbstractType
+class ProductEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -33,9 +33,8 @@ class ProductType extends AbstractType
                 ]])
             ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('orderValue', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);;
+            ->add('orderValue', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
