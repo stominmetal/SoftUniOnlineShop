@@ -29,13 +29,6 @@ class Categories
     private $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="image_name", type="string", length=255)
-     */
-    private $imageName;
-
-    /**
      * @var float
      *
      * @ORM\Column(name="discount", type="float")
@@ -94,28 +87,19 @@ class Categories
         return $this->name;
     }
 
-    public function setProductsNumber($quantity) {
+    public function setProductsNumber($quantity)
+    {
         $this->quantity = $quantity;
     }
 
-    public function getQuantity() {
+    public function getProductsNumber()
+    {
+        return $this->$quantity;
+    }
+
+    public function getQuantity()
+    {
         return $this->quantity;
-    }
-
-    /**
-     * @return string
-     */
-    public function getImageName()
-    {
-        return $this->imageName;
-    }
-
-    /**
-     * @param string $imageName
-     */
-    public function setImageName(string $imageName)
-    {
-        $this->imageName = $imageName;
     }
 }
 

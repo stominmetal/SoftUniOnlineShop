@@ -25,12 +25,8 @@ class EditProductType extends AbstractType
             ->add('catId', ChoiceType::class, [
                 'label' => 'Category',
                 'attr' => ['class' => 'form-control col-sm-4'],
-                'choices' => [
-                    'Phones' => 1,
-                    'Watches' => 2,
-                    'Audio' => 3,
-                    'Notebooks' => 4
-                ]])
+                'choices' => $this->buildChoices()
+            ])
             ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])

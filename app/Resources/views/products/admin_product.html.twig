@@ -13,13 +13,7 @@
         <div class="container-fluid product-info">
             <div class="col-md-4 text-center text-big">
                 <strong>Price:</strong>
-                {% if discount == 0 or discount is not defined %}
-                    {{ product.price|number_format(2) }} lv.
-                {% else %}
-                    <strike>{{ product.price|number_format(2) }} lv.</strike>
-                    <span style="color: red">{{ ((product.price * (100 - discount)) / 100)|number_format(2) }}
-                        lv.</span>
-                {% endif %}
+                {{ product.price|number_format(2) }} lv.
             </div>
             <div class="col-md-4 text-center text-big">
                 <strong>Quantity:</strong> {{ product.quantity }}
@@ -30,7 +24,8 @@
                 {% else %}
                     {% set btn %}
                         <a name="cart" class="btn btn-primary" href="{{ path('add_to_cart', {'id': product.id}) }}">Add
-                            to cart</a>
+                            to
+                            cart</a>
                     {% endset %}
                 {% endif %}
                 {{ btn }}

@@ -17,12 +17,12 @@
         </tr>
         </thead>
         <tbody>
-        <h3>Моите предмети</h3>
+        <h3 class="text-center">My stuff</h3>
         {% for product in boughtProducts %}
             <tr>
                 <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
                 <td>{{ product.name }}</td>
-                <td>{{ product.price }} лв.</td>
+                <td>{{ product.price|number_format(2) }} lv.</td>
                 <td>{{ product.quantity }}</td>
             </tr>
         {% endfor %}

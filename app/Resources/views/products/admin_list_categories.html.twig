@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'products' %}
+
+{% block main %}
+    <div class="text-center products-view">
+        <h2>Products</h2>
+        {% for products in result %}
+            <div class="row products-row">
+                {% for product in products %}
+                    <div class="col-md-3 text-center border product">
+                        <div class="text-big categories-product-title">{{ product.name }}</div>
+                        <div><a href="/product/{{ product.id }}"><img class="categories-image"
+                                                                      src="/images/products/{{ product.imageName }}"></a>
+                        </div>
+                        <div>{{ product.description|slice(0, 200) }}...</div>
+                        <hr>
+                        <p class="important-text"><strong>Price:</strong> {{ product.price|number_format(2) }} lv.
+                        </p>
+                        <p class="important-text"><strong>Quantity:</strong> {{ product.quantity }}</p>
+                        <hr>
+                        <div><a class="btn btn-primary learn-more" href="/admin-product/{{ product.id }}">Learn more</a></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

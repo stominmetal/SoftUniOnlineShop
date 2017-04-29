@@ -29,7 +29,7 @@ class ProductType extends AbstractType
                     'Phones' => 1,
                     'Watches' => 2,
                     'Audio' => 3,
-                    'Notebooks' => 4
+                    'Laptops' => 5
                 ]])
             ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
             ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])

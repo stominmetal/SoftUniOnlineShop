@@ -9,8 +9,8 @@
         <thead>
         <tr>
             <th class="text-center">#</th>
-            <th class="text-center">Image</th>
             <th class="text-center">Name</th>
+            <th class="text-center">Products</th>
             <th class="text-center">Discount</th>
             <th class="text-center"></th>
         </tr>
@@ -19,9 +19,9 @@
         {% for category in categories %}
             <tr>
                 <td>{{ category.id }}</td>
-                <td><img class="small-picture" src="/images/categories/{{ category.imageName }}"></td>
                 <td>{{ category.name }}</td>
-                <td>{{ category.discount }}</td>
+                <td>{{ category.quantity }}</td>
+                <td>{{ category.discount }}%</td>
                 <td>
                     <a href="{{ path('edit_category', {'id' : category.id}) }}"><span class="glyphicon glyphicon-edit edit-cat"></span></a>
                     <a href="#" data-id="{{ category.id }}"><span class="glyphicon glyphicon-trash delete-category trash"></span></a>

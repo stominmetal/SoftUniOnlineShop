@@ -13,6 +13,7 @@ use AppBundle\Entity\Categories;
 use AppBundle\Entity\User;
 use AppBundle\Form\CategoryType;
 use AppBundle\Form\EditCategoryType;
+use AppBundle\Form\EditProductType;
 use AppBundle\Form\ProductEditType;
 use AppBundle\Form\ProductType;
 use AppBundle\Form\UserType;
@@ -22,6 +23,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ProductsController extends Controller
 {
@@ -51,16 +58,10 @@ class ProductsController extends Controller
     }
 
     /**
-     * @Route("/categories/{catId}", name="products_list")
+     * @Route("/admin-categories/{catId}", name="admin_products_list")
      */
-    public function listProducts(int $catId)
+    public function listAdminProducts(int $catId)
     {
-        $userId = $this->getUser()->getId();
-
-        $user = $this->getDoctrine()
-            ->getRepository('AppBundle:User')
-            ->find($userId);
-
         $products = $this->getDoctrine()
             ->getRepository("AppBundle:Products")
             ->findBy(['catId' => $catId]);
@@ -74,6 +75,10 @@ class ProductsController extends Controller
         $tmp = [];
 
         for ($i = 0; $i < $count; $i++) {
+            if ($products[$i]->getQuantity() == 0) {
+                continue;
+            }
+
             if ($len == 4) {
                 $result[] = $tmp;
                 $tmp = [];
@@ -87,11 +92,100 @@ class ProductsController extends Controller
 
         $result[] = $tmp;
 
-        return $this->render("products/index.html.twig", [
+        return $this->render("products/admin_list_categories.html.twig", [
             'result' => $result,
             'catId' => $catId,
-            'discount' => $user->getDiscount()
         ]);
+    }
+
+    /**
+     * @Route("/categories/{catId}", name="products_list")
+     */
+    public function listProducts(int $catId)
+    {
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_EDITOR')) {
+            return $this->redirectToRoute('admin_products_list', ['catId' => $catId]);
+        }
+
+        if (!is_null($this->getUser())) {
+            $userId = $this->getUser()->getId();
+
+            $user = $this->getDoctrine()
+                ->getRepository('AppBundle:User')
+                ->find($userId);
+
+            $products = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findBy(['catId' => $catId]);
+
+            $count = count($products);
+            $len = 0;
+
+            $debug = [];
+
+            $result = [];
+            $tmp = [];
+
+            for ($i = 0; $i < $count; $i++) {
+                if ($products[$i]->getQuantity() == 0) {
+                    continue;
+                }
+
+                if ($len == 4) {
+                    $result[] = $tmp;
+                    $tmp = [];
+                    $tmp[] = $products[$i];
+                    $len = 0;
+                } else {
+                    $tmp[] = $products[$i];
+                    $len++;
+                }
+            }
+
+            $result[] = $tmp;
+
+            return $this->render("products/index.html.twig", [
+                'result' => $result,
+                'catId' => $catId,
+                'discount' => $user->getDiscount()
+            ]);
+        } else {
+            $products = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findBy(['catId' => $catId]);
+
+            $count = count($products);
+            $len = 0;
+
+            $debug = [];
+
+            $result = [];
+            $tmp = [];
+
+            for ($i = 0; $i < $count; $i++) {
+                if ($products[$i]->getQuantity() == 0) {
+                    continue;
+                }
+
+                if ($len == 4) {
+                    $result[] = $tmp;
+                    $tmp = [];
+                    $tmp[] = $products[$i];
+                    $len = 0;
+                } else {
+                    $tmp[] = $products[$i];
+                    $len++;
+                }
+            }
+
+            $result[] = $tmp;
+
+            return $this->render("products/index.html.twig", [
+                'result' => $result,
+                'catId' => $catId,
+                'discount' => 0
+            ]);
+        }
     }
 
     /**
@@ -99,20 +193,31 @@ class ProductsController extends Controller
      */
     public function product(int $id)
     {
-        $userId = $this->getUser()->getId();
+        if (!is_null($this->getUser())) {
+            $userId = $this->getUser()->getId();
 
-        $user = $this->getDoctrine()
-            ->getRepository('AppBundle:User')
-            ->find($userId);
+            $user = $this->getDoctrine()
+                ->getRepository('AppBundle:User')
+                ->find($userId);
 
-        $product = $this->getDoctrine()
-            ->getRepository("AppBundle:Products")
-            ->findOneBy(['id' => $id]);
+            $product = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findOneBy(['id' => $id]);
 
-        return $this->render("products/product.html.twig", [
-            'product' => $product,
-            'discount' => $user->getDiscount()
-        ]);
+            return $this->render("products/product.html.twig", [
+                'product' => $product,
+                'discount' => $user->getDiscount()
+            ]);
+        } else {
+            $product = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findOneBy(['id' => $id]);
+
+            return $this->render("products/product.html.twig", [
+                'product' => $product,
+                'discount' => 0
+            ]);
+        }
     }
 
     /**
@@ -121,7 +226,19 @@ class ProductsController extends Controller
     public function addProduct(Request $request)
     {
         $product = new Products();
-        $form = $this->createForm(ProductType::class, $product);
+        $form = $this->createFormBuilder($product)
+            ->add('name', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('description', TextareaType::class, ['attr' => ['class' => 'form-control col-sm-4', 'rows' => 10]])
+            ->add('catId', ChoiceType::class, [
+                'label' => 'Category',
+                'attr' => ['class' => 'form-control col-sm-4'],
+                'choices' => $this->buildChoices()])
+            ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('orderValue', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -200,29 +317,11 @@ class ProductsController extends Controller
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
+        $em = $this->getDoctrine()->getManager();
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $mimeType = $form['imageName']->getData()->getMimeType();
-
-            if ($mimeType == 'image/jpeg' || $mimeType == 'image/jpg') {
-                $em = $this->getDoctrine()->getManager();
-
-                $extension = explode("/", $mimeType)[1];
-                $newImgName = time() . "-" . rand(1, 999999) . "." . $extension;
-
-                $form['imageName']->getData()->move('images/categories', $newImgName);
-
-                $category->setImageName($newImgName);
-
-                $em->persist($category);
-                $em->flush();
-            } else {
-                return $this->render(
-                    'products/add_category.html.twig', [
-                        'form' => $form->createView()
-                    ]
-                );
-            }
-
+            $em->persist($category);
+            $em->flush();
             return $this->redirectToRoute('admin_categories');
         }
 
@@ -242,6 +341,17 @@ class ProductsController extends Controller
             ->getRepository("AppBundle:Categories")
             ->findAll();
 
+        /**
+         * @var $category \AppBundle\Entity\Categories
+         */
+        foreach ($categories as $category) {
+            $products = $this->getDoctrine()
+                ->getRepository("AppBundle:Products")
+                ->findBy(['catId' => $category->getId()]);
+
+            $category->setProductsNumber(count($products));
+        }
+
         return $this->render('products/admin_categories.html.twig', [
             'categories' => $categories
         ]);
@@ -258,6 +368,20 @@ class ProductsController extends Controller
 
         return $this->render('products/admin_products.html.twig', [
             'products' => $products
+        ]);
+    }
+
+    /**
+     * @Route("/admin-product/{id}", name="admin_product")
+     */
+    public function adminProduct(int $id)
+    {
+        $product = $this->getDoctrine()
+            ->getRepository("AppBundle:Products")
+            ->findOneBy(['id' => $id]);
+
+        return $this->render("products/admin_product.html.twig", [
+            'product' => $product
         ]);
     }
 
@@ -282,7 +406,18 @@ class ProductsController extends Controller
      */
     public function editProduct(Request $request, Products $product)
     {
-        $editForm = $this->createForm(ProductEditType::class, $product);
+        $editForm = $this->createFormBuilder($product)
+            ->add('name', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('description', TextareaType::class, ['attr' => ['class' => 'form-control col-sm-4', 'rows' => 10]])
+            ->add('catId', ChoiceType::class, [
+                'label' => 'Category',
+                'attr' => ['class' => 'form-control col-sm-4'],
+                'choices' => $this->buildChoices()])
+            ->add('price', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('quantity', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('orderValue', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->getForm();
         $editForm->handleRequest($request);
 
         $em = $this->getDoctrine()->getManager();
@@ -306,7 +441,7 @@ class ProductsController extends Controller
                 ));
             }
 
-            if (!($editForm['discount']->getData() >= 0 &&  $editForm['discount']->getData() <= 100)) {
+            if (!($editForm['discount']->getData() >= 0 && $editForm['discount']->getData() <= 100)) {
                 $this->get('session')->getFlashBag()->add('error', 'Discount should be number between 0 and 100!');
 
                 return $this->render('products/edit_product.html.twig', array(
@@ -335,13 +470,13 @@ class ProductsController extends Controller
      */
     public function editCategory(Request $request, Categories $category)
     {
-        $editForm = $this->createForm(EditCategoryType::class, $category);
+        $editForm = $this->createForm(CategoryType::class, $category);
         $editForm->handleRequest($request);
 
         $em = $this->getDoctrine()->getManager();
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            if (!($editForm['discount']->getData() >= 0 &&  $editForm['discount']->getData() <= 100)) {
+            if (!($editForm['discount']->getData() >= 0 && $editForm['discount']->getData() <= 100)) {
                 $this->get('session')->getFlashBag()->add('error', 'Discount should be 0 or bigger!');
 
                 return $this->render('products/edit_category.html.twig', array(
@@ -409,5 +544,19 @@ class ProductsController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('admin_categories');
+    }
+
+
+    protected function buildChoices()
+    {
+        $choices = [];
+        $rep = $this->getDoctrine()->getRepository('AppBundle:Categories');
+        $objs = $rep->findAll();
+
+        foreach ($objs as $obj) {
+            $choices[$obj->getName()] = $obj->getId();
+        }
+
+        return $choices;
     }
 }

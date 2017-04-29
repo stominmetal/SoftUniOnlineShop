@@ -22,7 +22,6 @@ class Products
     private $id;
 
     /**
-     * @var int
      *
      * @ORM\Column(name="cat_id", type="integer")
      */
@@ -121,7 +120,6 @@ class Products
     /**
      * Set catId
      *
-     * @param integer $catId
      *
      * @return Products
      */
@@ -134,8 +132,6 @@ class Products
 
     /**
      * Get catId
-     *
-     * @return int
      */
     public function getCatId()
     {

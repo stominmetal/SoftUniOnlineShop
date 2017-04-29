@@ -15,7 +15,6 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('imageName', FileType::class, ['attr' => ['class' => 'form-control col-sm-4'], 'data_class' => null])
             ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
     }
 
