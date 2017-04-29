@@ -18,20 +18,43 @@
                 </thead>
                 <tbody>
                 {% for id, product in products %}
+                    {% if discount == 0 %}
+                        {% set price %}
+                            <td>{{ product.price|number_format(2) }} lv.</td>
+                        {% endset %}
+                    {% else %}
+                        {% set price %}
+                            <td>
+                                <strike>{{ product.price|number_format(2) }} lv.</strike>
+                                <span style="color: red">{{ ((product.price * (100 - discount)) / 100)|number_format(2) }}
+                                    lv.</span>
+                            </td>
+                        {% endset %}
+                    {% endif %}
                     <tr>
                         <td><img class="small-picture" src="/images/products/{{ product.imageName }}"></td>
                         <td><a href="/product/{{ id }}">{{ product.name }}</a></td>
-                        <td>{{ product.price|number_format(2) }} lv.</td>
+                        {{ price }}
                         <td>{{ product.quantity }}</td>
-                        <td><a href="#" data-id="{{ id }}"><span class="glyphicon glyphicon-remove remove-element"></span></a></td>
+                        <td><a href="#" data-id="{{ id }}"><span
+                                        class="glyphicon glyphicon-remove remove-element"></span></a></td>
                     </tr>
                     {% set wholePrice = wholePrice + product.price * product.quantity %}
                 {% endfor %}
-                <tr><td class="text-right" id="priceAll" colspan="5">Price of all products: {{ wholePrice|number_format(2) }} lv.</td></tr>
+                <tr>
+                    <td class="text-right" id="priceAll" colspan="5">
+                        Price of allproducts: {% if discount == 0 %}
+                            {{ wholePrice|number_format(2) }} lv.
+                        {% else %}
+                            <strike>{{ wholePrice|number_format(2) }} lv.</strike>
+                            <span style="color: red">{{ ((wholePrice * (100 - discount)) / 100)|number_format(2) }} lv.</span>
+                        {% endif %}
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <div>
-                <a id="btn-buy" class="btn btn-primary" href="{{ path('buy_all_products') }}">Buy all</a>
+                <a id="btn-buy" class="btn btn-primary" href="#">Buy all</a>
             </div>
         {% else %}
             {{ products }}
@@ -46,7 +69,7 @@
             let productId = parseInt($(this).parent().attr('data-id'));
 
             $.confirm({
-                title: 'Confirm the delete',
+                title: 'Confirm the Delete',
                 content: "After clicking Confirm this item will be removed from the cart",
                 buttons: {
                     confirm: function () {
@@ -57,6 +80,21 @@
                     }
                 }
             })
-        })
+        });
+
+        $('#btn-buy').on('click', function () {
+            $.confirm({
+                title: 'Confirm the Buy',
+                content: 'Are you sure you want to buy?',
+                buttons: {
+                    buy: function () {
+                        window.location = "{{ path('buy_all_products') }}"
+                    },
+                    cancel: function () {
+
+                    }
+                }
+            })
+        });
     </script>
 {% endblock %}

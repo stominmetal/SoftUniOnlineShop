@@ -78,6 +78,12 @@ class CartController extends Controller
             ->getRepository('AppBundle:User')
             ->find($userId);
 
+        $userId = $this->getUser()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
         if ($user->isBan()) {
             $this->get('session')->getFlashBag()->add('error', 'This functionality is not allowed for banned users!');
 
@@ -107,7 +113,8 @@ class CartController extends Controller
         }
 
         return $this->render('products/cart.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'discount' => $user->getDiscount()
         ]);
     }
 
@@ -154,12 +161,22 @@ class CartController extends Controller
 
         $sum = 0;
 
-        foreach ($products as $productId => $quantity) {
-            $boughtProducts = $this->getDoctrine()
-                ->getRepository("AppBundle:Products")
-                ->find($productId);
+        if ($user->getDiscount() == 0) {
+            foreach ($products as $productId => $quantity) {
+                $boughtProducts = $this->getDoctrine()
+                    ->getRepository("AppBundle:Products")
+                    ->find($productId);
 
-            $sum += $boughtProducts->getPrice() * $quantity;
+                $sum += $boughtProducts->getPrice() * $quantity;
+            }
+        } else {
+            foreach ($products as $productId => $quantity) {
+                $boughtProducts = $this->getDoctrine()
+                    ->getRepository("AppBundle:Products")
+                    ->find($productId);
+
+                $sum += (($boughtProducts->getPrice() * (100 - $user->getDiscount())) / 100) * $quantity;
+            }
         }
 
         if ($user->getMoney() < $sum) {

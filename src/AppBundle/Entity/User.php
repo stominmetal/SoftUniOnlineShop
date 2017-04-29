@@ -67,6 +67,13 @@ class User implements UserInterface
     private $ban = false;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="discount", type="float")
+     */
+    private $discount = 0;
+
+    /**
      * @var ArrayCollection
      */
     private $articles;
@@ -110,6 +117,22 @@ class User implements UserInterface
     public function setBan(bool $ban)
     {
         $this->ban = $ban;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDiscount(): float
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @param float $discount
+     */
+    public function setDiscount(float $discount)
+    {
+        $this->discount = $discount;
     }
 
     /**

@@ -62,6 +62,9 @@
                                     </a>
                                 </li>
                             {% else %}
+                                <li style="margin-top: 15px;">
+                                    <span style="color: #2196f3">Wallet: </span><span style="color: #008800">{{ app.user.money|number_format(2) }} lv.</span>
+                                </li>
                                 <li>
                                     <a href="{{ path('cart_list') }}">
                                         <span class="glyphicon glyphicon-shopping-cart"></span>

@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductEditType extends AbstractType
+class EditProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

@@ -239,3 +239,10 @@ footer {
 .products-row {
     display: flex;
 }
+
+.discount {
+    background-color: #db0000;
+    color: white;
+    padding: 5px;
+    position: relative;
+}

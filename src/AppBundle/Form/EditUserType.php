@@ -14,7 +14,8 @@ class EditUserType extends AbstractType
     {
         $builder
             ->add('fullName', TextType::class, ['attr' => ['class' => 'form-control col-sm-4']])
-            ->add('money', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
+            ->add('money', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']])
+            ->add('discount', NumberType::class, ['attr' => ['class' => 'form-control col-sm-4']]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

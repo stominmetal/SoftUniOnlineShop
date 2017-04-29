@@ -75,7 +75,9 @@ class UserController extends Controller
 
         return $this->render(
             'user/register.html.twig',
-            array('form' => $form->createView())
+            array(
+                'form' => $form->createView(),
+            )
         );
     }
 
@@ -158,8 +160,18 @@ class UserController extends Controller
                 ));
             }
 
+            if (!($user->getMoney() >= 0 && $user->getDiscount() <= 100)) {
+                $this->get('session')->getFlashBag()->add('error', 'Discount should be between 0 and 100!');
+
+                return $this->render('user/edit_user.html.twig', array(
+                    'user' => $user,
+                    'edit_form' => $editForm->createView()
+                ));
+            }
+
             $user->setFullName($user->getFullName());
             $user->setMoney($user->getMoney());
+            $user->setDiscount($user->getDiscount());
             $em->flush();
 
             $this->get('session')->getFlashBag()->add('success', 'User properties were edited successfully!');

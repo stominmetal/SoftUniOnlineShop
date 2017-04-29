@@ -11,7 +11,13 @@
 
     <div class="container-fluid product-info">
         <div class="col-md-4 text-center text-big">
-            <strong>Price:</strong> {{ product.price }} lv.
+            <strong>Price:</strong>
+            {% if discount == 0 %}
+                {{ product.price|number_format(2) }} lv.
+            {% else %}
+                <strike>{{ product.price|number_format(2) }} lv.</strike>
+                <span style="color: red">{{ ((product.price * (100 - discount)) / 100)|number_format(2) }} lv.</span>
+            {% endif %}
         </div>
         <div class="col-md-4 text-center text-big">
             <strong>Quantity:</strong> {{ product.quantity }}

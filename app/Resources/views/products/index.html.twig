@@ -8,6 +8,26 @@
         {% for products in result %}
             <div class="row products-row">
                 {% for product in products %}
+                    {% if discount == 0 %}
+                        {% set discountSpan %}
+                        {% endset %}
+                        {% set price %}
+                            <p class="important-text"><strong>Price:</strong> {{ product.price|number_format(2) }} lv.
+                            </p>
+                        {% endset %}
+                    {% else %}
+                        {% set discountSpan %}
+                            <p class="important-text"><strong>Price:</strong> <span class="discount">-{{ discount }}%</span></p>
+                        {% endset %}
+                        {% set price %}
+                            <p class="important-text">
+                                <strong>Price:</strong>
+                                <strike>{{ product.price|number_format(2) }} lv.</strike>
+                                <span style="color: red">{{ ((product.price * (100 - discount)) / 100)|number_format(2) }}
+                                    lv.</span>
+                            </p>
+                        {% endset %}
+                    {% endif %}
                     <div class="col-md-3 text-center border product">
                         <div class="text-big categories-product-title">{{ product.name }}</div>
                         <div><a href="/product/{{ product.id }}"><img class="categories-image"
@@ -15,7 +35,8 @@
                         </div>
                         <div>{{ product.description|slice(0, 200) }}...</div>
                         <hr>
-                        <p class="important-text"><strong>Price:</strong> {{ product.price|number_format(2) }} lv.</p>
+                        {{ discountSpan }}
+                        {{ price }}
                         <p class="important-text"><strong>Quantity:</strong> {{ product.quantity }}</p>
                         <hr>
                         <div><a class="btn btn-primary learn-more" href="/product/{{ product.id }}">Learn more</a></div>
@@ -23,6 +44,6 @@
                 {% endfor %}
             </div>
         {% endfor %}
-        {#{{ dump(result) }}#}
+        {#{{ dump(disount) }}#}
     </div>
 {% endblock %}

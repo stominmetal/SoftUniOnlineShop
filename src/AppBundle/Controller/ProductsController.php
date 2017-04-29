@@ -55,6 +55,12 @@ class ProductsController extends Controller
      */
     public function listProducts(int $catId)
     {
+        $userId = $this->getUser()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
         $products = $this->getDoctrine()
             ->getRepository("AppBundle:Products")
             ->findBy(['catId' => $catId]);
@@ -83,7 +89,8 @@ class ProductsController extends Controller
 
         return $this->render("products/index.html.twig", [
             'result' => $result,
-            'catId' => $catId
+            'catId' => $catId,
+            'discount' => $user->getDiscount()
         ]);
     }
 
@@ -92,12 +99,19 @@ class ProductsController extends Controller
      */
     public function product(int $id)
     {
+        $userId = $this->getUser()->getId();
+
+        $user = $this->getDoctrine()
+            ->getRepository('AppBundle:User')
+            ->find($userId);
+
         $product = $this->getDoctrine()
             ->getRepository("AppBundle:Products")
             ->findOneBy(['id' => $id]);
 
         return $this->render("products/product.html.twig", [
-            'product' => $product
+            'product' => $product,
+            'discount' => $user->getDiscount()
         ]);
     }
 
